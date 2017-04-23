@@ -2,11 +2,13 @@ package cn.user0308.scutkicking;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import cn.user0308.scutkicking.Component.Ball;
 import cn.user0308.scutkicking.Component.Ruddy;
 
 /**
@@ -22,12 +24,16 @@ public class MainView extends SurfaceView implements Runnable,SurfaceHolder.Call
     private SurfaceHolder mSurfaceHolder = null;
     private Thread mThread = null;
     private boolean mIsRunning = false;
+
+    //球相关
+    private Ball mBall = null;
     public MainView(Context context){
         super(context);
         mRuddy = new Ruddy(context);
+
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
-
+        mBall = new Ball();
     }
 
     @Override
@@ -47,6 +53,8 @@ public class MainView extends SurfaceView implements Runnable,SurfaceHolder.Call
                 }else if(mSurfaceHolder == null){
                     Log.d("MyView","holder is null in run");
                 }
+                canvas.drawColor(Color.BLACK);//清屏
+                mBall.onDraw(canvas);
                 mRuddy.onDraw(canvas);
             }catch (NullPointerException e){
                 e.printStackTrace();

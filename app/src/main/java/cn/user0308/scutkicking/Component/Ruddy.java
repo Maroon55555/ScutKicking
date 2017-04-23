@@ -49,7 +49,7 @@ public class Ruddy {
 
     //绘制函数,绘制大小圆,设置大圆颜色为浅灰,透明度100,小圆红色,透明度200
     public void onDraw(Canvas canvas){
-        canvas.drawColor(Color.BLACK);
+        //canvas.drawColor(Color.BLACK);
         mPaint.setColor(Color.LTGRAY);
         mPaint.setAlpha(100);
         //在初始圆心位置绘制一个大圆半径的圆
