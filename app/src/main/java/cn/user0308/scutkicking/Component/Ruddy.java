@@ -58,6 +58,7 @@ public class Ruddy {
     }
 
     public boolean onTouchEvent(MotionEvent event){
+        Log.d("Ruddy","in Ruddy touch");
         int length = RuddyMathUtils.getLength(mRuddyInitPoint.x, mRuddyInitPoint.y, event.getX(), event.getY());
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             //如果屏幕接触点不在摇杆挥动范围内,则不处理

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mPaint = new Paint();
         initBuilding();
 
+        //setOnTouchListener(this);
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
     }
@@ -73,6 +75,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.d("MainView","in touch");
         return mRuddy.onTouchEvent(event);
         //return super.onTouchEvent(event);
     }
