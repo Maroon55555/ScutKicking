@@ -1,9 +1,9 @@
-package cn.user0308.scutkicking.MathUtils;
+package cn.user0308.scutkicking.Utils;
 
 import android.graphics.Point;
 
 /**
- * Created by user0308 on 4/23/17.
+ * Created by User0308 on 2017/4/23.
  */
 
 public class RuddyMathUtils {
@@ -14,7 +14,7 @@ public class RuddyMathUtils {
     }
 
     //计算定圆圆心与动圆圆心连线交于定圆弧长某点坐标
-    public static Point getBorderPoint(Point a,Point b,int r){
+    public static Point getBorderPoint(Point a, Point b, int r){
         float radian = getRadian(a, b);
         return new Point(a.x + (int)(r * Math.cos(radian)), a.y - (int)(r * Math.sin(radian)));
     }

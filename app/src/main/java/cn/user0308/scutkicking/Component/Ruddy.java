@@ -5,12 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 
-import cn.user0308.scutkicking.MathUtils.RuddyMathUtils;
+import cn.user0308.scutkicking.MainActivity;
+import cn.user0308.scutkicking.Utils.RuddyMathUtils;
 
 /**
  * Created by user0308 on 4/22/17.
@@ -30,10 +29,8 @@ public class Ruddy {
 
     public Ruddy(Context context){
 
-        //获取设备像素
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int windowHeightPix = displayMetrics.heightPixels;
-        int windowWidthPix = displayMetrics.widthPixels;
+        int windowHeightPix = MainActivity.sWindowHeightPix;
+        int windowWidthPix = MainActivity.sWindowWidthPix;
         Log.d("Ruddy","Height = " + windowHeightPix);
         Log.d("Ruddy","width = " + windowWidthPix);
         //初始化初始大圆小圆共同圆心位置
