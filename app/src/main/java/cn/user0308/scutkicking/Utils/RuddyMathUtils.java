@@ -1,6 +1,7 @@
 package cn.user0308.scutkicking.Utils;
 
 import android.graphics.Point;
+import android.util.Log;
 
 /**
  * Created by User0308 on 2017/4/23.
@@ -21,11 +22,23 @@ public class RuddyMathUtils {
 
     //计算两点连续与X轴形成的夹角弧度值
     public static float getRadian(Point a,Point b){
-        float lenA = b.x-a.x;
-        float lenB = b.y-a.y;
-        float lenC = (float)Math.sqrt(lenA*lenA+lenB*lenB);
-        float ang = (float)Math.acos(lenA/lenC);
-        ang = ang * (b.y > a.y ? -1 : 1);
-        return ang;
+        float lengthA = b.x-a.x;
+        float lengthB = b.y-a.y;
+        float lengthC = (float)Math.sqrt(lengthA*lengthA+lengthB*lengthB);
+        float radian = (float)Math.acos(lengthA/lengthC);
+        radian = radian * (b.y > a.y ? -1 : 1);
+        return radian;
+    }
+
+    //计算两点连续与X轴形成的夹角,x轴正方向顺时针方向为正角度
+    public static double getAngle(Point a,Point b){
+        float lengthA = b.x-a.x;
+        float lengthB = b.y-a.y;
+        float lengthC = (float)Math.sqrt(lengthA*lengthA+lengthB*lengthB);
+        Log.d("RuddyMathUtils","length A B C is " + lengthA + " " + lengthB + " " + lengthC);
+        double angle = Math.acos(lengthA/lengthC);
+        angle = angle * (b.y < a.y ? -1 : 1);
+        Log.d("RuddyMathUtils","angle calculate is " + Math.toDegrees(angle));
+        return Math.toDegrees(angle);
     }
 }

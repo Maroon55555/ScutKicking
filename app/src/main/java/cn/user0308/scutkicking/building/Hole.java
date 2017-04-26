@@ -29,8 +29,8 @@ public class Hole extends Building implements Attackable {
     public void attack() {
         Ball ball = new Ball(mPositionX, mPositionY,
                 RandomUtil.randomNum(begin, end));
-        Log.d("Hole", "随机数："+RandomUtil.randomNum(0,90));
-        Log.d("Hole", "发射球");
+        //Log.d("Hole", "随机数："+RandomUtil.randomNum(0,90));
+        //Log.d("Hole", "发射球");
         MainView.addBall(ball);
     }
 

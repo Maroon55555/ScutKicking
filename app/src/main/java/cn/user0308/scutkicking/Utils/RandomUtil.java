@@ -2,7 +2,7 @@ package cn.user0308.scutkicking.Utils;
 
 import java.util.Random;
 
-/**用于产生随机数
+/**用于产生指定范围内随机数
  * Created by Yuan Qiang on 2017/4/23.
  */
 

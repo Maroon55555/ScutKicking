@@ -19,7 +19,7 @@ public class Building implements Collision {
     //protected int mId; //资源文件id
     protected float mPositionX;
     protected float mPositionY;
-    protected float mDegree;
+    protected float mAngle;
     protected float mRadius = 50;
 
     public Building(float positionX, float positionY) {
@@ -50,12 +50,12 @@ public class Building implements Collision {
     }
 
     @Override
-    public float getDegree() {
-        return mDegree;
+    public float getAngle() {
+        return mAngle;
     }
 
-    public void setDegree(float degree) {
-        mDegree = degree;
+    public void setAngle(float angle) {
+        mAngle = angle;
     }
 
 }

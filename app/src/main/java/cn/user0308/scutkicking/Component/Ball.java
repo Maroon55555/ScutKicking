@@ -13,14 +13,17 @@ import cn.user0308.scutkicking.building.Building;
  */
 
 public class Ball implements Collision {
+    //小球球心位置x,y
     private float x;
     private float y;
-    private float mDegree;
+    //小球运动角度,以角度为单位
+    private float mAngle;
     private float mSpeed = 50;
+    //小球半径
     private float mRadius = 30f;
 
-    public float getDegree() {
-        return mDegree;
+    public float getAngle() {
+        return mAngle;
     }
 
 
@@ -28,25 +31,26 @@ public class Ball implements Collision {
     public Ball(float x, float y, float degree) {
         this.x = x;
         this.y = y;
-        mDegree = degree;
+        mAngle = degree;
     }
 
-    public void run(){
-        x += (mSpeed*Math.cos(Math.toRadians(mDegree)));
-        y += (mSpeed*Math.sin(Math.toRadians(mDegree)));
+    public void calculatePoint(){
+        x += (mSpeed*Math.cos(Math.toRadians(mAngle)));
+        y += (mSpeed*Math.sin(Math.toRadians(mAngle)));
     }
 
     public void collision(){}
 
-    public void bounce(Collision collision){
+    //碰撞到Building改变自身角度
+    public void changeAngle(Collision collision){
         if(collision instanceof Building)
-            mDegree = 2 * collision.getDegree() - mDegree;
+            mAngle = 2 * collision.getAngle() - mAngle;
         else
-            mDegree = collision.getDegree();
+            mAngle = collision.getAngle();
     }
 
     public void onDraw(Canvas canvas, Paint paint){
-        //canvas.drawColor(Color.BLACK);
+        //设置抗锯齿属性,白色
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
         canvas.drawCircle(x, y, mRadius ,paint);
