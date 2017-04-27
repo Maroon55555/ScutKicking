@@ -5,5 +5,5 @@ package cn.user0308.scutkicking;
  */
 
 public interface Collision {
-    float getAngle();
+
 }

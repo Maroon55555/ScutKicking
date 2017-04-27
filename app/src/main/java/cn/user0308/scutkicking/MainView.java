@@ -19,6 +19,7 @@ import java.util.List;
 import cn.user0308.scutkicking.Component.Ball;
 import cn.user0308.scutkicking.Component.Hero;
 import cn.user0308.scutkicking.Component.Ruddy;
+import cn.user0308.scutkicking.Utils.LineSegmentUtil;
 import cn.user0308.scutkicking.Utils.RuddyMathUtils;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
@@ -47,6 +48,9 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     private Paint mPaint = null;
     private Canvas canvas = null;
 
+    //地图中所有的线段
+    private List<LineSegmentUtil> mLineList;
+
 
     public MainView(Context context){
         super(context);
@@ -55,7 +59,13 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mBallList = new ArrayList<>();
         mBuildingList = new ArrayList<>();
         mPaint = new Paint();
+        mPaint.setColor(Color.BLACK);
         initBuilding();
+
+        mLineList = new ArrayList<>();
+        initWalls();
+        LineSegmentUtil line = new LineSegmentUtil(100,100,500,500);
+        mLineList.add(line);
 
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
@@ -74,6 +84,16 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mBuildingList.add(leftButtom);
         mBuildingList.add(rightTop);
         mBuildingList.add(rightButtom);
+    }
+    private void initWalls(){//初始化四周的边界
+        mLineList.add(new LineSegmentUtil(0, 0, MainActivity.sWindowWidthPix, 0));
+        mLineList.add(new LineSegmentUtil(MainActivity.sWindowWidthPix, 0,
+                MainActivity.sWindowWidthPix, MainActivity.sWindowHeightPix));
+        mLineList.add(new LineSegmentUtil(0, MainActivity.sWindowHeightPix,
+                MainActivity.sWindowWidthPix, MainActivity.sWindowHeightPix));
+        mLineList.add(new LineSegmentUtil(0, MainActivity.sWindowHeightPix,
+                0, 0));
+
     }
 
     public static void addBall(Ball ball){
@@ -120,10 +140,13 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         while (mIsRunning) {
             //计算小球实时位置
             for (Ball ball : mBallList) {
-                ball.calculatePoint();
+
+                if(!checkLineCollide(ball)){//如果未碰撞就移动，如果碰撞了它的位置在checkLineCollide方法中设置
+                    ball.calculatePoint();
+                }
             }
             //每隔50*50ms=2500ms建筑发球伤人
-            if(count % 50 == 0) {
+            if(count % 2000 == 0) {
                 count = 0;
                 for (Building building : mBuildingList) {
                     if (building instanceof Attackable) {
@@ -149,6 +172,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         try {
             canvas = mSurfaceHolder.lockCanvas();
             canvas.drawColor(Color.BLACK);//清屏
+            canvas.drawLine(100,100,500,500, mPaint);
             //画操纵杆
             mRuddy.onDraw(canvas);
             //画出所有建筑
@@ -169,6 +193,31 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 mSurfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
+    }
+    /** 
+     *  检测小球有没有碰撞到地图上的线段
+     *  @author Yuan Qiang
+     *  created at 2017/4/27 18:02
+     *  @param 
+     */
+    
+    public boolean checkLineCollide(Ball ball){
+        //用小球当前位置与下一要运动到的位置构成线段
+        LineSegmentUtil ballLine = new LineSegmentUtil(ball.getX(), ball.getY(), 
+                ball.getX() +ball.offsetX(ball.getSpeed()+ ball.getRadius()),
+                ball.getY() +ball.offsetY(ball.getSpeed()+ ball.getRadius()));
+        for(LineSegmentUtil line:mLineList){
+            //如果线段相交说明小球将碰到建筑物
+            if(line.checkIntersect(ballLine)){
+                ball.rebound(line);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void checkCollide(Ball ball1, Ball ball2){
+
     }
 
     @Override

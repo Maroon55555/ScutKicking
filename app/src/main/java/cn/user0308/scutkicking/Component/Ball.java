@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 
 import cn.user0308.scutkicking.Collision;
+import cn.user0308.scutkicking.MainActivity;
+import cn.user0308.scutkicking.Utils.LineSegmentUtil;
 import cn.user0308.scutkicking.building.Building;
 
 /**
@@ -26,8 +28,6 @@ public class Ball implements Collision {
         return mAngle;
     }
 
-
-
     public Ball(float x, float y, float degree) {
         this.x = x;
         this.y = y;
@@ -35,18 +35,30 @@ public class Ball implements Collision {
     }
 
     public void calculatePoint(){
-        x += (mSpeed*Math.cos(Math.toRadians(mAngle)));
-        y += (mSpeed*Math.sin(Math.toRadians(mAngle)));
+        x += offsetX(mSpeed);
+        y += offsetY(mSpeed);
     }
 
-    public void collision(){}
+    /**
+     *  小球反弹
+     *  @author Yuan Qiang
+     *  created at 2017/4/27 18:07
+     *  @param collision 可碰撞对象，小球根据此来决定要发生的动作
+     */
 
-    //碰撞到Building改变自身角度
-    public void changeAngle(Collision collision){
-        if(collision instanceof Building)
-            mAngle = 2 * collision.getAngle() - mAngle;
-        else
-            mAngle = collision.getAngle();
+    public void rebound(Collision collision){
+        if(collision instanceof LineSegmentUtil){
+            x = (((LineSegmentUtil) collision).getIntersectionX() - offsetX(mRadius));
+            y = (((LineSegmentUtil) collision).getIntersectionY() - offsetY(mRadius));
+            mAngle = 2 * ((LineSegmentUtil) collision).getAngle() - mAngle;
+        }
+    }
+
+    public float offsetX(float x){//观察到很多地方都需要用到这样的语句，因此特意提出来。。。
+        return (float) (x * Math.cos(Math.toRadians(mAngle)));
+    }
+    public float offsetY(float y){
+        return (float) (y * Math.sin(Math.toRadians(mAngle)));
     }
 
     public void onDraw(Canvas canvas, Paint paint){
@@ -54,5 +66,37 @@ public class Ball implements Collision {
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
         canvas.drawCircle(x, y, mRadius ,paint);
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getRadius() {
+        return mRadius;
+    }
+
+    public void setAngle(float angle) {
+        mAngle = angle;
+    }
+
+    public float getSpeed() {
+        return mSpeed;
+    }
+
+    public void setSpeed(float speed) {
+        mSpeed = speed;
     }
 }

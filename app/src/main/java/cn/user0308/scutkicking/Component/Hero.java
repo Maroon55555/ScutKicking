@@ -11,7 +11,10 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
+import java.util.List;
+
 import cn.user0308.scutkicking.R;
+import cn.user0308.scutkicking.Utils.LineSegmentUtil;
 
 /**
  * Created by user0308 on 4/25/17.
@@ -24,6 +27,7 @@ public class Hero {
     private Point mPoint = null;
     private double mSpeed;
     private double mAngle;
+
 
     public Hero(Context context){
         mPoint = new Point(100,200);

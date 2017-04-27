@@ -49,7 +49,6 @@ public class Building implements Collision {
         this.mPositionY = positionY;
     }
 
-    @Override
     public float getAngle() {
         return mAngle;
     }
