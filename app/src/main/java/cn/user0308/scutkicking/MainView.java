@@ -139,11 +139,14 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         int count = 0;
         while (mIsRunning) {
             //计算小球实时位置
-            for (Ball ball : mBallList) {
-
-                if(!checkLineCollide(ball)){//如果未碰撞就移动，如果碰撞了它的位置在checkLineCollide方法中设置
-                    ball.calculatePoint();
+            for (int i = 0; i <mBallList.size() -1; i++) {
+                //如果未碰撞就移动，如果碰撞了它的位置在checkLineCollide方法中设置
+                if(!checkLineCollide(mBallList.get(i))){
+                    mBallList.get(i).calculatePoint();
                 }
+//                for(int j = i + 1; j < mBallList.size(); j ++){
+//                    checkBallCollide(mBallList.get(i), mBallList.get(j));
+//                }
             }
             //每隔50*50ms=2500ms建筑发球伤人
             if(count % 2000 == 0) {
@@ -195,7 +198,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         }
     }
     /** 
-     *  检测小球有没有碰撞到地图上的线段
+     *  检测球与线段的碰撞
      *  @author Yuan Qiang
      *  created at 2017/4/27 18:02
      *  @param 
@@ -216,8 +219,61 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         return false;
     }
 
-    public void checkCollide(Ball ball1, Ball ball2){
+    /**
+     *  检测球与球的碰撞
+     *  @author Yuan Qiang
+     *  created at 2017/4/27 20:21
+     *  @param
+     */
 
+    public void checkBallCollide(Ball ball1, Ball ball2){
+        //两球的距离
+        float distance = (ball1.getY() - ball2.getY()) * (ball1.getY() - ball2.getY())
+                + (ball1.getX() - ball2.getX()) * (ball1.getX() - ball2.getX());
+        //两球距离小于半径则碰撞
+        if(distance <= (ball1.getRadius() + ball2.getRadius()) * (ball1.getRadius() + ball2.getRadius())){
+            float s1 = ball1.getSpeed();
+            float s2 = ball2.getSpeed();
+            float a3 = new LineSegmentUtil(ball1.getX(), ball1.getY(), ball2.getX(), ball2.getY())
+                    .getAngle();//两圆心构成的线段的角度
+            //接下来是玄学向量操作
+            float x1 = ball1.offsetX(s1);//将球1的速度转化为向量形式称为向量a
+            float y1 = ball1.offsetY(s1);
+            float x2 = ball2.offsetX(s2);//同理球2称为向量b
+            float y2 = ball2.offsetY(s2);
+            float p = (float) Math.cos(Math.toRadians(a3));//将线段转化为单位向量，称该向量为R
+            float q = (float) Math.sin(Math.toRadians(a3));
+            float dx1 = (p * x1 + q * y1)/(p * p + q * q);//将a投影到向量R
+            float dy1 = (p * y1 - q * x1)/(p * p + q * q);
+            float px1 = p * dx1;//这是投影沿R方向的向量   p便是ping行，c表示chui直  XD
+            float py1 = q * dx1;
+            float cx1 =-q * dy1;//这是投影垂直R方向的向量
+            float cy1 = p * dy1;
+            //同理
+            float dx2 = (p * x2 + q * y2)/(p * p + q * q);//将a投影到向量R
+            float dy2 = (p * y2 - q * x2)/(p * p + q * q);
+            float px2 = p * dx2;//这是投影沿R方向的向量   p便是ping行，c表示chui直  XD
+            float py2 = q * dx2;
+            float cx2 =-q * dy2;//这是投影垂直R方向的向量
+            float cy2 = p * dy2;
+
+            /**
+             * 注意：根据计算，两质量相同的小球碰撞，其沿球心方向的速度交换，而垂直球心的方向不变
+             */
+            float temp;//交换速度
+            temp = px1; px1 = px2;  px2 = temp;
+            temp = py1; py1 = py2;  py2 = temp;
+
+            //接下来根据向量转化为速度方向，先将两速度分量组合，n表示now
+            float nx1 = px1 + cx1;
+            float ny1 = py1 + cy1;
+            ball1.setAngle((float) Math.toDegrees(Math.atan(ny1/nx1)));
+            //同理
+            float nx2 = px2 + cx2;
+            float ny2 = py2 + cy2;
+            ball2.setAngle((float) Math.toDegrees(Math.atan(ny2/nx2)));
+
+        }
     }
 
     @Override
