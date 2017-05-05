@@ -93,7 +93,8 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             //mHero.setmSpeed(20.0);
         }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            mHero.setmSpeed(25.0);
+            int speed = mRuddy.getmLength();
+            mHero.setmSpeed(speed/5);
         }
         //如果手指离开屏幕，则摇杆返回初始位置
         if (event.getAction() == MotionEvent.ACTION_UP) {
