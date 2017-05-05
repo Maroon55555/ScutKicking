@@ -4,22 +4,19 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.user0308.scutkicking.Component.Ball;
 import cn.user0308.scutkicking.Component.Hero;
+import cn.user0308.scutkicking.Component.Rect;
 import cn.user0308.scutkicking.Component.Ruddy;
-import cn.user0308.scutkicking.Utils.RuddyMathUtils;
+import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
 import cn.user0308.scutkicking.building.Hole;
@@ -47,6 +44,10 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     private Paint mPaint = null;
     private Canvas canvas = null;
 
+    //地图中所有的线段
+    private List<Line> mLineList;
+
+    private Rect rect;
 
     public MainView(Context context){
         super(context);
@@ -55,7 +56,24 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mBallList = new ArrayList<>();
         mBuildingList = new ArrayList<>();
         mPaint = new Paint();
+        mPaint.setColor(Color.BLACK);
         initBuilding();
+
+        List<Line> lines = new ArrayList<>();
+        Line line1 = new Line(600,600,600,800);//left
+        Line line2 = new Line(600,600,800,600);//top
+        Line line3 = new Line(600,800,800,800);//bottom
+        Line line4 = new Line(800,600,800,800);//right
+        lines.add(line1);
+        lines.add(line2);
+        lines.add(line3);
+        lines.add(line4);
+        rect = new Rect(lines);
+
+        mLineList = new ArrayList<>();
+        initWalls();
+        Line line = new Line(100,100,500,500);
+        mLineList.add(line);
 
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
@@ -74,6 +92,16 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mBuildingList.add(leftButtom);
         mBuildingList.add(rightTop);
         mBuildingList.add(rightButtom);
+    }
+    private void initWalls(){//初始化四周的边界
+        mLineList.add(new Line(0, 0, MainActivity.sWindowWidthPix, 0));
+        mLineList.add(new Line(MainActivity.sWindowWidthPix, 0,
+                MainActivity.sWindowWidthPix, MainActivity.sWindowHeightPix));
+        mLineList.add(new Line(0, MainActivity.sWindowHeightPix,
+                MainActivity.sWindowWidthPix, MainActivity.sWindowHeightPix));
+        mLineList.add(new Line(0, MainActivity.sWindowHeightPix,
+                0, 0));
+
     }
 
     public static void addBall(Ball ball){
@@ -117,39 +145,53 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     @Override
     public void run() {
-        int count = 0;
         while (mIsRunning) {
-            //计算小球实时位置
-            for (Ball ball : mBallList) {
-                ball.calculatePoint();
-            }
-            //每隔50*50ms=2500ms建筑发球伤人
-            if(count % 50 == 0) {
-                count = 0;
-                for (Building building : mBuildingList) {
-                    if (building instanceof Attackable) {
-                        ((Attackable) building).attack();
-                    }
-                }
-            }
-            //绘制小球,建筑,操控杆
-            mHero.updatePoint();
+            long start = System.currentTimeMillis();
+            logic();
             myDraw();
+            long end = System.currentTimeMillis();
             //切换线程
             try {
-                Thread.sleep(50);
-                count ++;
+                if(end - start < 20);
+                Thread.sleep(20 - (end - start));
+                Log.d("MainView", "time:" + (end -start));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
 
+    public  void logic(){
+        for (int i = 0; i <mBallList.size() ; i++) {
+            mBallList.get(i).calculatePoint();
+            if(mBallList.get(i).collide(rect))
+                continue;
+            for(int j = i + 1; j < mBallList.size(); j ++){
+                if(mBallList.get(i). collide(mBallList.get(j)))
+                    break;
+            }
+            for(Line line:mLineList){
+                if(mBallList.get(i).collide(line))
+                    break;
+            }
+        }
+        //每隔50*50ms=2500ms建筑发球伤人
+        if(mBallList.size()<20) {
+            for (Building building : mBuildingList) {
+                if (building instanceof Attackable) {
+                    ((Attackable) building).attack();
+                }
+            }
+        }
+        //绘制小球,建筑,操控杆
+        mHero.updatePoint();
+    }
     //绘画对象的先后顺序不同,后画的会覆盖前画的
     public void myDraw(){
         try {
             canvas = mSurfaceHolder.lockCanvas();
             canvas.drawColor(Color.BLACK);//清屏
+            canvas.drawLine(100,100,500,500, mPaint);
             //画操纵杆
             mRuddy.onDraw(canvas);
             //画出所有建筑
@@ -157,6 +199,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                     mBuildingList) {
                 building.onDraw(canvas, mPaint);
             }
+            rect.onDraw(canvas, mPaint);
             //画出所有球
             for(Ball ball:
                     mBallList){

@@ -6,7 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 
-import cn.user0308.scutkicking.Collision;
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.MainActivity;
 
 import static android.R.attr.bitmap;
@@ -15,23 +19,30 @@ import static android.R.attr.bitmap;
  * Created by Yuan Qiang on 2017/4/23.
  */
 
-public class Building implements Collision {
+abstract public class Building implements Collideable {
     //protected int mId; //资源文件id
     protected float mPositionX;
     protected float mPositionY;
-    protected float mAngle;
-    protected float mRadius = 50;
+    protected List<Line> mLineList;
 
     public Building(float positionX, float positionY) {
         //this.mId = id;
         this.mPositionX = positionX;
         this.mPositionY = positionY;
+        mLineList = new ArrayList<>();
     }
 
-    public void onDraw(Canvas canvas, Paint paint){
-        canvas.drawCircle(mPositionX, mPositionY, mRadius, paint);
-    }
+    abstract public void onDraw(Canvas canvas, Paint paint);
 
+    @Override
+    public boolean collide(Collideable object) {
+        for (Line line :mLineList){
+            if (line.collide(line)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public float getPositionX() {
         return mPositionX;
@@ -47,15 +58,6 @@ public class Building implements Collision {
 
     public void setPositionY(float positionY) {
         this.mPositionY = positionY;
-    }
-
-    @Override
-    public float getAngle() {
-        return mAngle;
-    }
-
-    public void setAngle(float angle) {
-        mAngle = angle;
     }
 
 }

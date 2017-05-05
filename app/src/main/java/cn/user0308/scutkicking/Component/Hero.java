@@ -1,11 +1,9 @@
 package cn.user0308.scutkicking.Component;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -24,6 +22,7 @@ public class Hero {
     private Point mPoint = null;
     private double mSpeed;
     private double mAngle;
+
 
     public Hero(Context context){
         mPoint = new Point(100,200);
