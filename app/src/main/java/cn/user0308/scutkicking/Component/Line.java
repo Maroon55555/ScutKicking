@@ -1,14 +1,16 @@
-package cn.user0308.scutkicking.Utils;
+package cn.user0308.scutkicking.Component;
 
-import cn.user0308.scutkicking.Collision;
-import cn.user0308.scutkicking.MainActivity;
+import android.util.Log;
+
+import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.Lineable;
 
 /**
  * Created by Yuan Qiang on 2017/4/27.
  * 我爱数学 XD
  */
 
-public class LineSegmentUtil implements Collision{
+public class Line implements Collideable{
     private float mAngle;  //线段的角度，应该在-90度到90度之间，可以用角度来简单的改变碰撞小球的方向
 
     private float x1, y1;  //线段左边点的坐标
@@ -21,7 +23,7 @@ public class LineSegmentUtil implements Collision{
     private float intersectionX;//两线段的交点
     private float intersectionY;
 
-    public LineSegmentUtil(float x1, float y1, float x2, float y2) {
+    public Line(float x1, float y1, float x2, float y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -42,6 +44,17 @@ public class LineSegmentUtil implements Collision{
         return mAngle;
     }
 
+    @Override
+    public boolean collide(Collideable object) {
+        if (object instanceof Ball){
+            checkBallCollide((Ball)object);
+        }else if(object instanceof Line){
+            return checkIntersect((Line)object);
+        }else if(object instanceof Lineable){
+            return object.collide(this);
+        }
+        return false;
+    }
     /**
      *  用来确定两直线是否相交
      *  @author Yuan Qiang
@@ -49,7 +62,46 @@ public class LineSegmentUtil implements Collision{
      *  @param
      */
 
-    public boolean checkIntersect(LineSegmentUtil line){//判断两线段是否相交
+    public boolean checkBallCollide(Ball ball){
+//        return ball.checkLineCollide(this);
+        float x = ball.getX();//球心坐标
+        float y = ball.getY();
+        float vx1 = x -x1;//若点A为x1,y1,点B为x,y，点C为x2,y2,那么以下向量AB
+        float vy1 = y - y1;
+        float length = (float) Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+        float vx2 = (x2 - x1)/length;//AC的单位向量
+        float vy2 = (y2 - y1)/length;
+        float dotProduct = vx1 * vx2 + vy1 * vy2;//计算点积，其意义是向量AB在AC上的投影
+        if(dotProduct < 0 || dotProduct > length){
+            return false;
+        }else {
+            //端点检测
+            float endpoint1 = (float) Math.sqrt((x1 - x)*(x1 - x) + (y1 - y)*(y1 - y));
+            float endpoint2 = (float) Math.sqrt((x2 - x)*(x2 - x) + (y2 - y)*(y2 - y));
+            float distance = calDistance(x,y);//计算球心到线段的距离
+            if (endpoint1 <= ball.getRadius()){
+                Line line = new Line(x1,x2,x,y);
+                ball.setAngle(2*line.getA() - ball.getAngle());
+                ball.setAngle(mAngle - 180);
+                ball.back();
+                return true;
+            }else if (endpoint2 < ball.getRadius()){
+                Line line = new Line(x2,x2,x,y);
+                ball.setAngle(2*line.getA() - ball.getAngle());
+                ball.setAngle( ball.getAngle() - 180);
+                ball.back();
+                return true;
+            }else if(distance <= ball.getRadius()){
+                ball.setAngle(2 * mAngle - ball.getAngle());//碰撞小球改变角度
+                ball.back();
+                return true;
+            }else {
+                Log.d("Line", "return false");
+                return false;
+            }
+        }
+    }
+    public boolean checkIntersect(Line line){//判断两线段是否相交
         if( this.checkOnLine(line.getX1(), line.getY1()) //该判断条件指line的两端点在本线两端
                 * this.checkOnLine(line.getX2(), line.getY2()) < 0)
         {//但是由于这是两根线段因此需要判断这根线段的两端点也应在line的两端
@@ -125,4 +177,5 @@ public class LineSegmentUtil implements Collision{
     public float getIntersectionY() {
         return intersectionY;
     }
+
 }

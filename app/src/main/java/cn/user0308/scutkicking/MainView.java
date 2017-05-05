@@ -4,23 +4,19 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.user0308.scutkicking.Component.Ball;
 import cn.user0308.scutkicking.Component.Hero;
+import cn.user0308.scutkicking.Component.Rect;
 import cn.user0308.scutkicking.Component.Ruddy;
-import cn.user0308.scutkicking.Utils.LineSegmentUtil;
-import cn.user0308.scutkicking.Utils.RuddyMathUtils;
+import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
 import cn.user0308.scutkicking.building.Hole;
@@ -49,8 +45,9 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     private Canvas canvas = null;
 
     //地图中所有的线段
-    private List<LineSegmentUtil> mLineList;
+    private List<Line> mLineList;
 
+    private Rect rect;
 
     public MainView(Context context){
         super(context);
@@ -62,9 +59,20 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mPaint.setColor(Color.BLACK);
         initBuilding();
 
+        List<Line> lines = new ArrayList<>();
+        Line line1 = new Line(600,600,600,800);//left
+        Line line2 = new Line(600,600,800,600);//top
+        Line line3 = new Line(600,800,800,800);//bottom
+        Line line4 = new Line(800,600,800,800);//right
+        lines.add(line1);
+        lines.add(line2);
+        lines.add(line3);
+        lines.add(line4);
+        rect = new Rect(lines);
+
         mLineList = new ArrayList<>();
         initWalls();
-        LineSegmentUtil line = new LineSegmentUtil(100,100,500,500);
+        Line line = new Line(100,100,500,500);
         mLineList.add(line);
 
         mSurfaceHolder = this.getHolder();
@@ -86,12 +94,12 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mBuildingList.add(rightButtom);
     }
     private void initWalls(){//初始化四周的边界
-        mLineList.add(new LineSegmentUtil(0, 0, MainActivity.sWindowWidthPix, 0));
-        mLineList.add(new LineSegmentUtil(MainActivity.sWindowWidthPix, 0,
+        mLineList.add(new Line(0, 0, MainActivity.sWindowWidthPix, 0));
+        mLineList.add(new Line(MainActivity.sWindowWidthPix, 0,
                 MainActivity.sWindowWidthPix, MainActivity.sWindowHeightPix));
-        mLineList.add(new LineSegmentUtil(0, MainActivity.sWindowHeightPix,
+        mLineList.add(new Line(0, MainActivity.sWindowHeightPix,
                 MainActivity.sWindowWidthPix, MainActivity.sWindowHeightPix));
-        mLineList.add(new LineSegmentUtil(0, MainActivity.sWindowHeightPix,
+        mLineList.add(new Line(0, MainActivity.sWindowHeightPix,
                 0, 0));
 
     }
@@ -136,40 +144,47 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     @Override
     public void run() {
-        int count = 0;
         while (mIsRunning) {
-            //计算小球实时位置
-            for (int i = 0; i <mBallList.size() -1; i++) {
-                //如果未碰撞就移动，如果碰撞了它的位置在checkLineCollide方法中设置
-                if(!checkLineCollide(mBallList.get(i))){
-                    mBallList.get(i).calculatePoint();
-                }
-//                for(int j = i + 1; j < mBallList.size(); j ++){
-//                    checkBallCollide(mBallList.get(i), mBallList.get(j));
-//                }
-            }
-            //每隔50*50ms=2500ms建筑发球伤人
-            if(count % 2000 == 0) {
-                count = 0;
-                for (Building building : mBuildingList) {
-                    if (building instanceof Attackable) {
-                        ((Attackable) building).attack();
-                    }
-                }
-            }
-            //绘制小球,建筑,操控杆
-            mHero.updatePoint();
+            long start = System.currentTimeMillis();
+            logic();
             myDraw();
+            long end = System.currentTimeMillis();
             //切换线程
             try {
-                Thread.sleep(50);
-                count ++;
+                if(end - start < 20);
+                Thread.sleep(20 - (end - start));
+                Log.d("MainView", "time:" + (end -start));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
 
+    public  void logic(){
+        for (int i = 0; i <mBallList.size() ; i++) {
+            mBallList.get(i).calculatePoint();
+            if(mBallList.get(i).collide(rect))
+                continue;
+            for(int j = i + 1; j < mBallList.size(); j ++){
+                if(mBallList.get(i). collide(mBallList.get(j)))
+                    break;
+            }
+            for(Line line:mLineList){
+                if(mBallList.get(i).collide(line))
+                    break;
+            }
+        }
+        //每隔50*50ms=2500ms建筑发球伤人
+        if(mBallList.size()<20) {
+            for (Building building : mBuildingList) {
+                if (building instanceof Attackable) {
+                    ((Attackable) building).attack();
+                }
+            }
+        }
+        //绘制小球,建筑,操控杆
+        mHero.updatePoint();
+    }
     //绘画对象的先后顺序不同,后画的会覆盖前画的
     public void myDraw(){
         try {
@@ -183,6 +198,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                     mBuildingList) {
                 building.onDraw(canvas, mPaint);
             }
+            rect.onDraw(canvas, mPaint);
             //画出所有球
             for(Ball ball:
                     mBallList){
@@ -195,84 +211,6 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             if(canvas != null){
                 mSurfaceHolder.unlockCanvasAndPost(canvas);
             }
-        }
-    }
-    /** 
-     *  检测球与线段的碰撞
-     *  @author Yuan Qiang
-     *  created at 2017/4/27 18:02
-     *  @param 
-     */
-    
-    public boolean checkLineCollide(Ball ball){
-        //用小球当前位置与下一要运动到的位置构成线段
-        LineSegmentUtil ballLine = new LineSegmentUtil(ball.getX(), ball.getY(), 
-                ball.getX() +ball.offsetX(ball.getSpeed()+ ball.getRadius()),
-                ball.getY() +ball.offsetY(ball.getSpeed()+ ball.getRadius()));
-        for(LineSegmentUtil line:mLineList){
-            //如果线段相交说明小球将碰到建筑物
-            if(line.checkIntersect(ballLine)){
-                ball.rebound(line);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     *  检测球与球的碰撞
-     *  @author Yuan Qiang
-     *  created at 2017/4/27 20:21
-     *  @param
-     */
-
-    public void checkBallCollide(Ball ball1, Ball ball2){
-        //两球的距离
-        float distance = (ball1.getY() - ball2.getY()) * (ball1.getY() - ball2.getY())
-                + (ball1.getX() - ball2.getX()) * (ball1.getX() - ball2.getX());
-        //两球距离小于半径则碰撞
-        if(distance <= (ball1.getRadius() + ball2.getRadius()) * (ball1.getRadius() + ball2.getRadius())){
-            float s1 = ball1.getSpeed();
-            float s2 = ball2.getSpeed();
-            float a3 = new LineSegmentUtil(ball1.getX(), ball1.getY(), ball2.getX(), ball2.getY())
-                    .getAngle();//两圆心构成的线段的角度
-            //接下来是玄学向量操作
-            float x1 = ball1.offsetX(s1);//将球1的速度转化为向量形式称为向量a
-            float y1 = ball1.offsetY(s1);
-            float x2 = ball2.offsetX(s2);//同理球2称为向量b
-            float y2 = ball2.offsetY(s2);
-            float p = (float) Math.cos(Math.toRadians(a3));//将线段转化为单位向量，称该向量为R
-            float q = (float) Math.sin(Math.toRadians(a3));
-            float dx1 = (p * x1 + q * y1)/(p * p + q * q);//将a投影到向量R
-            float dy1 = (p * y1 - q * x1)/(p * p + q * q);
-            float px1 = p * dx1;//这是投影沿R方向的向量   p便是ping行，c表示chui直  XD
-            float py1 = q * dx1;
-            float cx1 =-q * dy1;//这是投影垂直R方向的向量
-            float cy1 = p * dy1;
-            //同理
-            float dx2 = (p * x2 + q * y2)/(p * p + q * q);//将a投影到向量R
-            float dy2 = (p * y2 - q * x2)/(p * p + q * q);
-            float px2 = p * dx2;//这是投影沿R方向的向量   p便是ping行，c表示chui直  XD
-            float py2 = q * dx2;
-            float cx2 =-q * dy2;//这是投影垂直R方向的向量
-            float cy2 = p * dy2;
-
-            /**
-             * 注意：根据计算，两质量相同的小球碰撞，其沿球心方向的速度交换，而垂直球心的方向不变
-             */
-            float temp;//交换速度
-            temp = px1; px1 = px2;  px2 = temp;
-            temp = py1; py1 = py2;  py2 = temp;
-
-            //接下来根据向量转化为速度方向，先将两速度分量组合，n表示now
-            float nx1 = px1 + cx1;
-            float ny1 = py1 + cy1;
-            ball1.setAngle((float) Math.toDegrees(Math.atan(ny1/nx1)));
-            //同理
-            float nx2 = px2 + cx2;
-            float ny2 = py2 + cy2;
-            ball2.setAngle((float) Math.toDegrees(Math.atan(ny2/nx2)));
-
         }
     }
 

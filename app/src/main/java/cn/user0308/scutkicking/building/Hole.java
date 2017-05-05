@@ -1,7 +1,10 @@
 package cn.user0308.scutkicking.building;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.Log;
 
+import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.Component.Ball;
 import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.Utils.RandomUtil;
@@ -14,9 +17,15 @@ import cn.user0308.scutkicking.Utils.RandomUtil;
 public class Hole extends Building implements Attackable {
     private float begin = 0;//发射球的起始角度
     private float end = 0;
+    private float mRadius = 50;
 
     public Hole( float positionX, float positionY) {
         super(positionX, positionY);
+    }
+
+    @Override
+    public void onDraw(Canvas canvas, Paint paint) {
+        canvas.drawCircle(mPositionX, mPositionY, mRadius, paint);
     }
 
     public Hole(float positionX, float positionY, float begin, float end) {
@@ -27,7 +36,9 @@ public class Hole extends Building implements Attackable {
 
     @Override
     public void attack() {
-        Ball ball = new Ball(mPositionX, mPositionY,
+        float medium = (begin + end)/2;
+        Ball ball = new Ball(mPositionX+ (float) (mRadius *Math.cos(Math.toRadians(medium))),
+                mPositionY+(float) (mRadius*Math.sin(Math.toRadians(medium))),
                 RandomUtil.randomNum(begin, end));
         //Log.d("Hole", "随机数："+RandomUtil.randomNum(0,90));
         //Log.d("Hole", "发射球");
@@ -49,4 +60,5 @@ public class Hole extends Building implements Attackable {
     public void setEnd(float end) {
         this.end = end;
     }
+
 }

@@ -1,20 +1,15 @@
 package cn.user0308.scutkicking.Component;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
-import java.util.List;
-
 import cn.user0308.scutkicking.R;
-import cn.user0308.scutkicking.Utils.LineSegmentUtil;
 
 /**
  * Created by user0308 on 4/25/17.
