@@ -24,7 +24,8 @@ public class Ruddy {
     //外面摇杆(大圆)的半径,具体数值到时修改
     private static final int RUDDY_RADIUS = 200;
     //
-    private double mAngle;
+    private double mAngle;//小圆圆心与大圆圆心连线与x轴正方向形成的夹角
+    private int mLength;//触摸点与大圆圆心之间距离,距离越长,设置Hero运动速度越大
     private Point mRuddyWheelCurrPoint;//当前小圆圆心位置
     private static Point mRuddyInitPoint;//初始大圆和小圆共同圆心位置
 
@@ -34,8 +35,7 @@ public class Ruddy {
 
         int windowHeightPix = MainActivity.sWindowHeightPix;
         int windowWidthPix = MainActivity.sWindowWidthPix;
-        //Log.d("Ruddy","Height = " + windowHeightPix);
-        //Log.d("Ruddy","width = " + windowWidthPix);
+
         //初始化初始大圆小圆共同圆心位置
         mRuddyInitPoint = new Point(RUDDY_RADIUS+RUDDY_WHEEL_RADIUS,
                                     windowHeightPix-RUDDY_RADIUS-RUDDY_WHEEL_RADIUS);
@@ -83,13 +83,17 @@ public class Ruddy {
             }
             //Log.d("Ruddy","point is" + mRuddyWheelCurrPoint.x + " " + mRuddyWheelCurrPoint.y);
             mAngle = RuddyMathUtils.getAngle(mRuddyWheelCurrPoint,new Point((int)event.getX(),(int)event.getY()));
-
+            mLength = RuddyMathUtils.getLength((int)event.getX(),(int)event.getY(),mRuddyInitPoint.x,mRuddyInitPoint.y);
         }
         //如果手指离开屏幕，则摇杆返回初始位置
         if (event.getAction() == MotionEvent.ACTION_UP) {
             mRuddyWheelCurrPoint = new Point(mRuddyInitPoint);
         }
         return true;
+    }
+
+    public int getmLength(){
+        return mLength;
     }
 
     public double getAngle(){
