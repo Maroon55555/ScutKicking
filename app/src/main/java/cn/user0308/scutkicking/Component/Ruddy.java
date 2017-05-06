@@ -37,7 +37,7 @@ public class Ruddy {
         int windowWidthPix = MainActivity.sWindowWidthPix;
 
         //初始化初始大圆小圆共同圆心位置
-        mRuddyInitPoint = new Point(RUDDY_RADIUS+RUDDY_WHEEL_RADIUS,
+        mRuddyInitPoint = new Point(RUDDY_RADIUS+RUDDY_WHEEL_RADIUS*2,
                                     windowHeightPix-RUDDY_RADIUS-RUDDY_WHEEL_RADIUS);
 
         //初始化画笔,设置抗锯齿属性
@@ -57,7 +57,7 @@ public class Ruddy {
         canvas.drawCircle(mRuddyInitPoint.x, mRuddyInitPoint.y, RUDDY_RADIUS, mPaint);
         //小圆红色,不透明度200,
         mPaint.setColor(Color.RED);
-        mPaint.setAlpha(200);
+        mPaint.setAlpha(150);
         canvas.drawCircle(mRuddyWheelCurrPoint.x, mRuddyWheelCurrPoint.y, RUDDY_WHEEL_RADIUS, mPaint);//绘制摇杆
         //mPaint.setAlpha(255);
     }
@@ -83,7 +83,10 @@ public class Ruddy {
             }
             //Log.d("Ruddy","point is" + mRuddyWheelCurrPoint.x + " " + mRuddyWheelCurrPoint.y);
             mAngle = RuddyMathUtils.getAngle(mRuddyWheelCurrPoint,new Point((int)event.getX(),(int)event.getY()));
+
+            //if(even.X,y>r)
             mLength = RuddyMathUtils.getLength((int)event.getX(),(int)event.getY(),mRuddyInitPoint.x,mRuddyInitPoint.y);
+            if(mLength>RUDDY_RADIUS) mLength = RUDDY_RADIUS;
         }
         //如果手指离开屏幕，则摇杆返回初始位置
         if (event.getAction() == MotionEvent.ACTION_UP) {
