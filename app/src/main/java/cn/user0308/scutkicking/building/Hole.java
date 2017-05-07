@@ -39,7 +39,7 @@ public class Hole extends Building implements Attackable {
         float medium = (begin + end)/2;
         Ball ball = new Ball(mPositionX+ (float) (mRadius *Math.cos(Math.toRadians(medium))),
                 mPositionY+(float) (mRadius*Math.sin(Math.toRadians(medium))),
-                RandomUtil.randomNum(begin, end));
+                RandomUtil.randomNum(begin, end),true);
         //Log.d("Hole", "随机数："+RandomUtil.randomNum(0,90));
         //Log.d("Hole", "发射球");
         MainView.addBall(ball);

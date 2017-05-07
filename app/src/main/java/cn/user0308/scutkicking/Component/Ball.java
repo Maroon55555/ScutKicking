@@ -17,8 +17,8 @@ public class Ball implements Collideable {
     private float x;
     private float y;
     //小球在地图中的坐标
-    private int mapX,mapY;
-
+    //private int mapX,mapY;
+    private boolean isBubbleBall=true;
     //小球上一帧的位置
     private float px;
     private float py;
@@ -33,10 +33,11 @@ public class Ball implements Collideable {
         return mAngle;
     }
 
-    public Ball(float x, float y, float degree) {
+    public Ball(float x, float y, float degree,boolean isBubbleBall) {
         this.x = x;
         this.y = y;
         mAngle = degree;
+        this.isBubbleBall = isBubbleBall;
     }
 
     public void calculatePoint(){

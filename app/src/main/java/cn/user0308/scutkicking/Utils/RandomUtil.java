@@ -21,9 +21,11 @@ public class RandomUtil {
     }
 
     public static Point createRandomPoint(){
-        Bitmap bg = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.bg);
-        int w = bg.getWidth();
-        int h = bg.getHeight();
+        //Bitmap bg = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.bg);
+        //int w = bg.getWidth();
+        //int h = bg.getHeight();
+        int w = MainActivity.sWindowWidthPix;
+        int h = MainActivity.sWindowHeightPix;
         Log.d("CreateRandomPoint","w h is " + w + " " + h);
         int randomX =(int)(Math.random()*w);
         int randomY =(int)(Math.random()*h);

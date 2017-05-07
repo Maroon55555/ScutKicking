@@ -66,7 +66,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
         initBuilding();
-        initXY();
+        //initXY();
 
         List<Line> lines = new ArrayList<>();
         Line line1 = new Line(600,600,600,800);//left
@@ -112,6 +112,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 0, 0));
 
     }
+    /*
     private void initXY(){
         switch (mHero.getmArea()){
             case 11:
@@ -157,7 +158,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 break;
         }
     }
-
+    */
     public static void addBall(Ball ball){
         if(ball!=null){
             mBallList.add(ball);
@@ -237,15 +238,15 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 }
             }
         }
-        move();
-        //mHero.updatePoint();
+        //move();
+        mHero.updatePoint();
     }
     //绘画对象的先后顺序不同,后画的会覆盖前画的
     public void myDraw(){
         try {
             canvas = mSurfaceHolder.lockCanvas();
             canvas.drawColor(Color.BLACK);//清屏
-            canvas.drawBitmap(getPartBitmap(x,y), 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
+            canvas.drawBitmap(MainActivity.bg, 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
             canvas.drawLine(100,100,500,500, mPaint);
             //画操纵杆
             mRuddy.onDraw(canvas);
@@ -269,7 +270,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             }
         }
     }
-
+/*
     public void move(){
         int screenCenterX = MainActivity.sWindowWidthPix/2;
         int screenCenterY = MainActivity.sWindowHeightPix/2;
@@ -385,12 +386,11 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         }
 
     }
-
     private Bitmap getPartBitmap(int x, int y){
         //Log.d("MainView","get x ,y is " + x + " " + y);
         return Bitmap.createBitmap(MainActivity.bg,x,y,MainActivity.sWindowWidthPix,MainActivity.sWindowHeightPix);
     }
-
+*/
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         mIsRunning = true;

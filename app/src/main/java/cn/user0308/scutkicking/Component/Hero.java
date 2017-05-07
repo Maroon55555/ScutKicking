@@ -24,17 +24,19 @@ public class Hero {
     private Bitmap mBitmap = null;
     private Paint mPaint = null;
     private Point mPoint = null;//重心
-    private int posX;
-    private int posY;
+    //private int posX;
+    //private int posY;
     private int screenX;
     private int screenY;
+    private int mHeroWidth;
+    private int mHeroHeight;
     private int mArea;
     private double mSpeed;
     private double mAngle;
 
     public Hero(){
-        posX = 0;
-        posY = 0;
+        //posX = 0;
+        //posY = 0;
         screenX = 0;
         screenY = 0;
         mSpeed = 0;
@@ -46,8 +48,10 @@ public class Hero {
         this(point.x,point.y);
     }
     public Hero(int x,int y){
-        posX = x;
-        posY = y;
+        //posX = x;
+        //posY = y;
+        screenX=x;
+        screenY=y;
         mSpeed = 0;
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
@@ -64,19 +68,19 @@ public class Hero {
         int width = mBitmap.getWidth();
         int height = mBitmap.getHeight();
         // 设置想要的大小
-        int newWidth = 50;
-        int newHeight = 40;
+        mHeroHeight = 50;
+        mHeroWidth = 40;
         // 计算缩放比例
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
+        float scaleWidth = ((float) mHeroWidth) / width;
+        float scaleHeight = ((float) mHeroHeight) / height;
         // 取得想要缩放的matrix参数
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         // 得到新的图片
         mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix,true);
-        init2Hero();
+        //init2Hero();
     }
-
+/*
     public void init2Hero(){
 
         int mScreenWidth = MainActivity.sWindowWidthPix;
@@ -168,12 +172,29 @@ public class Hero {
             screenY=mScreenHeight/2;
         }
     }
-
+*/
     public void onDraw(Canvas canvas){
         canvas.drawBitmap(mBitmap,screenX,screenY,mPaint);
     }
     public Hero getHero(){
         return this;
+    }
+
+    public void updatePoint(){
+        int offsetX = (int)(mSpeed*Math.cos(Math.toRadians(mAngle)));
+        int offsetY = (int)(mSpeed*Math.sin(Math.toRadians(mAngle)));
+        if(screenX+offsetX<0)
+            screenX=0;
+        else if(screenX+offsetX>MainActivity.sWindowWidthPix-mHeroWidth){
+            screenX=MainActivity.sWindowWidthPix-mHeroWidth;
+        }else
+            screenX=screenX+offsetX;
+        if(screenY+offsetY<0)
+            screenY=0;
+        else if(screenY+offsetY>MainActivity.sWindowHeightPix-mHeroHeight){
+            screenY=MainActivity.sWindowHeightPix-mHeroHeight;
+        }else
+            screenY=screenY+offsetY;
     }
 
     public void setmSpeed(double speed){
@@ -194,21 +215,21 @@ public class Hero {
         mPoint = point;
     }
 
-    public int getPosX(){
-        return posX;
-    }
+//    public int getPosX(){
+//        return posX;
+//    }
 
-    public int getPosY() {
-        return posY;
-    }
+//    public int getPosY() {
+//        return posY;
+//    }
 
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
+//    public void setPosX(int posX) {
+//        this.posX = posX;
+//    }
+//
+//    public void setPosY(int posY) {
+//        this.posY = posY;
+//    }
 
     public int getScreenX() {
         return screenX;
