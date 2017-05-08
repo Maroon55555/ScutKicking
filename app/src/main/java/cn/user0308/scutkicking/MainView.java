@@ -55,29 +55,35 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     //地图中所有的线段
     private List<Line> mLineList;
 
+    private List<Lineable> mLineableList;
+
     private Rect rect;
 
     public MainView(Context context){
         super(context);
+
         mRuddy = new Ruddy(context);
         mHero = new Hero(RandomUtil.createRandomPoint());
         mBallList = new ArrayList<>();
         mBuildingList = new ArrayList<>();
+        mLineableList = new ArrayList<>();
         mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
         initBuilding();
         //initXY();
 
         List<Line> lines = new ArrayList<>();
-        Line line1 = new Line(600,600,600,800);//left
-        Line line2 = new Line(600,600,800,600);//top
-        Line line3 = new Line(600,800,800,800);//bottom
-        Line line4 = new Line(800,600,800,800);//right
+        Line line1 = new Line(600,300,600,500);//left
+        Line line2 = new Line(600,300,700,300);//top
+        Line line3 = new Line(600,500,700,500);//bottom
+        Line line4 = new Line(700,300,700,500);//right
         lines.add(line1);
         lines.add(line2);
         lines.add(line3);
         lines.add(line4);
         rect = new Rect(lines);
+
+        mLineableList.add(rect);
 
         mLineList = new ArrayList<>();
         initWalls();
@@ -87,6 +93,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
     }
+
 
     private void initBuilding(){
         //Hold继承自Building,构造函数参数为:重心x,y坐标,在(起始角度,结束角度)范围内发射球
@@ -174,22 +181,29 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             //如果屏幕接触点不在摇杆挥动范围内,则不处理返回false
             //mHero.setmSpeed(20.0);
+            Log.d("MainView", "ACTION_DOWN");
         }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             int speed = mRuddy.getmLength();
             mHero.setmSpeed(speed/5);
+            Log.d("MainView", "ACTION_MOVE");
         }
         //如果手指离开屏幕，则摇杆返回初始位置
         if (event.getAction() == MotionEvent.ACTION_UP) {
             mHero.setmSpeed(0.0);
+            Log.d("MainView", "ACTION_UP");
         }
 
         //如果有Touch事件,把事件传递给操控杆处理
         //若操控杆返回true表示操控杆已经处理过此事件,通知上层不再处理
         boolean isDealBymRuddy = mRuddy.onTouchEvent(event);
+        Log.d("MainView", "isDealByRuddy"+isDealBymRuddy);
         if(isDealBymRuddy){
             //Log.d("MainView","操控杆已处理");
+            Log.d("MainView", "mRuddy.getAngle"+mRuddy.getAngle());
+            Log.d("MainView", "mHero.setAngle"+mHero.getmAngle());
             mHero.setAngle(mRuddy.getAngle());
+            Log.d("MainView", "mHero.setAngle"+mHero.getmAngle());
             return true;
         }else {
             //操控杆没有处理,交由其他控件处理,若其他控件已经处理则把下面的返回值false改为true
@@ -207,8 +221,8 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             long end = System.currentTimeMillis();
             //切换线程
             try {
-                if(end - start < 20);
-                Thread.sleep(20 - (end - start));
+                if(end - start < 30);
+                Thread.sleep(30 - (end - start));
                 Log.d("MainView", "time:" + (end -start));
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -217,8 +231,15 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     }
 
     public  void logic(){
+        mHero.updatePoint();
+        for(Lineable object:mLineableList){
+            if(object.collide(mHero))
+                continue;
+        }
+
         for (int i = 0; i <mBallList.size() ; i++) {
             mBallList.get(i).calculatePoint();
+            mBallList.get(i).collide(mHero);
             if(mBallList.get(i).collide(rect))
                 continue;
             for(int j = i + 1; j < mBallList.size(); j ++){
@@ -231,7 +252,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             }
         }
         //每隔50*50ms=2500ms建筑发球伤人
-        if(mBallList.size()<20) {
+        if(mBallList.size()<12 ) {
             for (Building building : mBuildingList) {
                 if (building instanceof Attackable) {
                     ((Attackable) building).attack();
@@ -239,7 +260,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             }
         }
         //move();
-        mHero.updatePoint();
+
     }
     //绘画对象的先后顺序不同,后画的会覆盖前画的
     public void myDraw(){

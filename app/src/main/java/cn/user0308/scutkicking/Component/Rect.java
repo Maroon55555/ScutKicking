@@ -13,8 +13,11 @@ import cn.user0308.scutkicking.Lineable;
  * Created by Yuan Qiang on 2017/5/2.
  */
 
-public class Rect implements Lineable {
-    private List<Line> lines;
+public class Rect extends Lineable {
+    @Override
+    public void initLines() {
+
+    }
 
     public void onDraw(Canvas canvas, Paint paint){
         for (Line line:lines){
@@ -24,15 +27,5 @@ public class Rect implements Lineable {
 
     public Rect(List<Line> lines) {
         this.lines = lines;
-    }
-    @Override
-    public boolean collide(Collideable object) {
-        for (Line line:lines){
-            boolean b = line.collide(object);
-            Log.d("Rect", b+"");
-            if (b == true)
-                return true;
-        }
-        return false;
     }
 }
