@@ -20,6 +20,8 @@ import cn.user0308.scutkicking.Component.Rect;
 import cn.user0308.scutkicking.Component.Ruddy;
 import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.Utils.RandomUtil;
+//import cn.user0308.scutkicking.activity.MainActivity;
+import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
 import cn.user0308.scutkicking.building.Hole;
@@ -267,7 +269,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         try {
             canvas = mSurfaceHolder.lockCanvas();
             canvas.drawColor(Color.BLACK);//清屏
-            canvas.drawBitmap(MainActivity.bg, 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
+            //canvas.drawBitmap(MainActivity.bg, 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
             canvas.drawLine(100,100,500,500, mPaint);
             //画操纵杆
             mRuddy.onDraw(canvas);

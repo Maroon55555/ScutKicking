@@ -6,6 +6,7 @@ import android.graphics.Paint;
 
 import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.Lineable;
+import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.building.Hole;
 
 /**
@@ -26,7 +27,7 @@ public class Ball implements Collideable {
     private float mAngle;
     private float mSpeed = 15;
     //小球半径
-    private float mRadius = 20;
+    private float mRadius = (float) (0.04* MainActivity.sWindowHeightPix);
 
 
     public float getAngle() {

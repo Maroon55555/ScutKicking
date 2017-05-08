@@ -5,13 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import cn.user0308.scutkicking.MainActivity;
+import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.Utils.RuddyMathUtils;
-
-import static cn.user0308.scutkicking.Utils.RuddyMathUtils.getRadian;
 
 /**
  * Created by user0308 on 4/22/17.
@@ -20,9 +17,9 @@ import static cn.user0308.scutkicking.Utils.RuddyMathUtils.getRadian;
 public class Ruddy {
 
     //中间滑轮(小圆)的半径,具体数值到时修改
-    private static final int RUDDY_WHEEL_RADIUS = 50;
+    private static final int RUDDY_WHEEL_RADIUS = (int)(0.05*MainActivity.sWindowHeightPix);
     //外面摇杆(大圆)的半径,具体数值到时修改
-    private static final int RUDDY_RADIUS = 200;
+    private static final int RUDDY_RADIUS = (int)(0.15*MainActivity.sWindowHeightPix);
     //
     private double mAngle;//小圆圆心与大圆圆心连线与x轴正方向形成的夹角
     private int mLength;//触摸点与大圆圆心之间距离,距离越长,设置Hero运动速度越大

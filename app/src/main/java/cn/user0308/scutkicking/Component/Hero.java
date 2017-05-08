@@ -15,7 +15,7 @@ import java.util.List;
 
 import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.Lineable;
-import cn.user0308.scutkicking.MainActivity;
+import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.R;
 import cn.user0308.scutkicking.Utils.InWhichArea;
 import cn.user0308.scutkicking.Utils.RandomUtil;
