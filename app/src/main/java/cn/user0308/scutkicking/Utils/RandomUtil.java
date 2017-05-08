@@ -1,15 +1,10 @@
 package cn.user0308.scutkicking.Utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
-import java.util.Random;
-
-import cn.user0308.scutkicking.MainActivity;
-import cn.user0308.scutkicking.R;
+import cn.user0308.scutkicking.activity.MainActivity;
 
 /**用于产生指定范围内随机数
  * Created by Yuan Qiang on 2017/4/23.

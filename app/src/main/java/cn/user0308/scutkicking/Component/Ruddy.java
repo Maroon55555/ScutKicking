@@ -5,13 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import cn.user0308.scutkicking.MainActivity;
+import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.Utils.RuddyMathUtils;
-
-import static cn.user0308.scutkicking.Utils.RuddyMathUtils.getRadian;
 
 /**
  * Created by user0308 on 4/22/17.

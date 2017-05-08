@@ -1,6 +1,5 @@
 package cn.user0308.scutkicking.Component;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,10 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
-import cn.user0308.scutkicking.MainActivity;
+import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.R;
-import cn.user0308.scutkicking.Utils.InWhichArea;
-import cn.user0308.scutkicking.Utils.RandomUtil;
 
 /**
  * Created by user0308 on 4/25/17.

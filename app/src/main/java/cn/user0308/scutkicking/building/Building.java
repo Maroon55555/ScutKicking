@@ -1,19 +1,13 @@
 package cn.user0308.scutkicking.building;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.Component.Line;
-import cn.user0308.scutkicking.MainActivity;
-
-import static android.R.attr.bitmap;
 
 /**
  * Created by Yuan Qiang on 2017/4/23.
