@@ -47,13 +47,14 @@ public class Line implements Collideable{
     @Override
     public boolean collide(Collideable object) {
         if (object instanceof Ball){
-            checkBallCollide((Ball)object);
+            return checkBallCollide((Ball)object);
         }else if(object instanceof Line){
             return checkIntersect((Line)object);
         }else if(object instanceof Lineable){
             return object.collide(this);
+        }else {
+            return false;
         }
-        return false;
     }
     /**
      *  用来确定两直线是否相交
@@ -66,6 +67,29 @@ public class Line implements Collideable{
 //        return ball.checkLineCollide(this);
         float x = ball.getX();//球心坐标
         float y = ball.getY();
+        float endpoint1 = (float) Math.sqrt((x1 - x)*(x1 - x) + (y1 - y)*(y1 - y));
+        float endpoint2 = (float) Math.sqrt((x2 - x)*(x2 - x) + (y2 - y)*(y2 - y));
+        if (endpoint1 <= ball.getRadius()){
+                Line line = new Line(x1,y1,x,y);
+                ball.setAngle(2*line.getAngle() - ball.getAngle());
+//            float dx = x - x1;
+//            float dy = y - y1;
+//            float angle = (float) Math.toDegrees(Math.acos(dx/Math.sqrt(dx*dx+dy*dy)));
+//            ball.setAngle(angle);
+                ball.back();
+            return true;
+        }else if (endpoint2 <= ball.getRadius()){
+                Line line = new Line(x2,y2,x,y);
+                ball.setAngle(2*line.getAngle() - ball.getAngle());
+                ball.back();
+//            float dx = x - x2;
+//            float dy = y - y2;
+//            float angle = (float) Math.toDegrees(Math.acos(dx/Math.sqrt(dx*dx+dy*dy)));
+//            ball.setAngle(angle);
+//            ball.back();
+            return true;
+        }
+
         float vx1 = x -x1;//若点A为x1,y1,点B为x,y，点C为x2,y2,那么以下向量AB
         float vy1 = y - y1;
         float length = (float) Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
@@ -75,23 +99,8 @@ public class Line implements Collideable{
         if(dotProduct < 0 || dotProduct > length){
             return false;
         }else {
-            //端点检测
-            float endpoint1 = (float) Math.sqrt((x1 - x)*(x1 - x) + (y1 - y)*(y1 - y));
-            float endpoint2 = (float) Math.sqrt((x2 - x)*(x2 - x) + (y2 - y)*(y2 - y));
             float distance = calDistance(x,y);//计算球心到线段的距离
-            if (endpoint1 <= ball.getRadius()){
-                Line line = new Line(x1,x2,x,y);
-                ball.setAngle(2*line.getA() - ball.getAngle());
-                ball.setAngle(mAngle - 180);
-                ball.back();
-                return true;
-            }else if (endpoint2 < ball.getRadius()){
-                Line line = new Line(x2,x2,x,y);
-                ball.setAngle(2*line.getA() - ball.getAngle());
-                ball.setAngle( ball.getAngle() - 180);
-                ball.back();
-                return true;
-            }else if(distance <= ball.getRadius()){
+             if(distance <= ball.getRadius()){
                 ball.setAngle(2 * mAngle - ball.getAngle());//碰撞小球改变角度
                 ball.back();
                 return true;
@@ -143,16 +152,13 @@ public class Line implements Collideable{
         return x1;
     }
 
-
     public float getY1() {
         return y1;
     }
 
-
     public float getX2() {
         return x2;
     }
-
 
     public float getY2() {
         return y2;

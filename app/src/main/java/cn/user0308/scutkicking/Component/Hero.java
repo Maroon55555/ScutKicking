@@ -10,13 +10,18 @@ import android.graphics.Point;
 import android.util.Log;
 
 import cn.user0308.scutkicking.activity.MainActivity;
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.Lineable;
 import cn.user0308.scutkicking.R;
 
 /**
  * Created by user0308 on 4/25/17.
  */
 
-public class Hero {
+public class Hero extends Lineable{
 
     private Bitmap mBitmap = null;
     private Paint mPaint = null;
@@ -24,13 +29,35 @@ public class Hero {
     //private int posX;
     //private int posY;
     private int screenX;
-    private int screenY;
+    private int screenY;//左上角的店
     private int mHeroWidth;
     private int mHeroHeight;
     private int mArea;
     private double mSpeed;
     private double mAngle;
 
+    //    public int getPosX(){
+//        return posX;
+//    public int getPosY() {
+//        return posY;
+//    public void setPosX(int posX) {
+//        this.posX = posX;
+//    }
+//
+//    public void setPosY(int posY) {
+//        this.posY = posY;
+    @Override
+    public void initLines() {
+        Line lineTop = new Line(screenX,screenY, screenX+mHeroWidth,screenY);//图片上方线段
+        Line lineLeft = new Line(screenX,screenY,screenX,screenY+mHeroHeight);//左边
+        Line lineBottom = new Line(screenX,screenY+mHeroHeight,screenX+mHeroWidth,screenY+mHeroHeight);//下方
+        Line lineRight = new Line(screenX+mHeroWidth,screenY,screenX+mHeroWidth,screenY+mHeroHeight);//右方
+        lines.add(lineTop);
+        lines.add(lineLeft);
+        lines.add(lineRight);
+        lines.add(lineBottom);
+
+    }
     public Hero(){
         //posX = 0;
         //posY = 0;
@@ -40,10 +67,15 @@ public class Hero {
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         initHero();
+        for(int i=0;i<lines.size();i++){
+            lines.remove(i);
+        }
+        initLines();
     }
     public Hero(Point point){
         this(point.x,point.y);
     }
+
     public Hero(int x,int y){
         //posX = x;
         //posY = y;
@@ -53,8 +85,11 @@ public class Hero {
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         initHero();
+        for(int i=0;i<lines.size();i++){
+            lines.remove(i);
+        }
+        initLines();
     }
-
     public void initHero(){
         //mPoint = RandomUtil.createRandomPoint();
         mPaint = new Paint();
@@ -77,106 +112,51 @@ public class Hero {
         mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix,true);
         //init2Hero();
     }
-/*
-    public void init2Hero(){
 
-        int mScreenWidth = MainActivity.sWindowWidthPix;
-        int mScreenHeight = MainActivity.sWindowHeightPix;
-        int mMapWidth = MainActivity.sMapWidth;
-        int mMapHeight = MainActivity.sMapHeight;
-
-        if(InWhichArea.isInA1(posX,posY,mScreenWidth,mScreenHeight)){
-            //在A1
-            Log.d("InWhichArea ","A1");
-
-            mArea = 11;
-            screenX=posX;
-            screenY=posY;
-        } else if(InWhichArea.isInA2(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            //in A2
-            Log.d("InWhichArea ","A2");
-
-            //mHero.setScreenX(mScreenWidth-mMapWidth+hero_x);
-            mArea = 12;
-            screenX=mScreenWidth-mMapWidth+posX;
-            screenY=posY;
-        }else if(InWhichArea.isInA3(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            Log.d("InWhichArea ","A3");
-
-            mArea = 13;
-            screenX=posX;
-            screenY=mScreenHeight-mMapHeight+posY;
-        }else if(InWhichArea.isInA4(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            Log.d("InWhichArea ","A4");
-
-            mArea = 14;
-            screenX=mScreenWidth-mMapWidth+posX;
-            screenY=mScreenHeight-mMapHeight+posY;
-        }else if(InWhichArea.isInB1(posX,posY,mScreenWidth,mScreenHeight)){//B1 & B2 is the same
-            Log.d("InWhichArea ","B1");
-
-            mArea = 21;
-            screenX=mScreenWidth/2;
-            screenY=posY;
-        }else if(InWhichArea.isInB2(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            Log.d("InWhichArea ","B2");
-
-            mArea = 22;
-            screenX=mScreenWidth/2;
-            screenY=posY;
-        }else if(InWhichArea.isInB3(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){//B3 & B4 is the same
-            Log.d("InWhichArea ","B3");
-
-            mArea = 23;
-            screenX=mScreenWidth/2;
-            screenY=mScreenHeight-mMapHeight+posY;
-        }else if(InWhichArea.isInB4(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            Log.d("InWhichArea ","B4");
-
-            mArea = 24;
-            screenX=mScreenWidth/2;
-            screenY=mScreenHeight-mMapHeight+posY;
-        }else if(InWhichArea.isInC1(posX,posY,mScreenWidth,mScreenHeight)){//C1 &C3is the same
-            Log.d("InWhichArea ","C1");
-
-            mArea = 31;
-            screenX=posX;
-            screenY=mScreenHeight/2;
-        }else if(InWhichArea.isInC2(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){//C2 & C4is the same
-            Log.d("InWhichArea ","C2");
-
-            mArea = 32;
-            screenX=mScreenWidth-mMapWidth+posX;
-            screenY=mScreenHeight/2;
-        }else if(InWhichArea.isInC3(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            Log.d("InWhichArea ","C3");
-
-            mArea = 33;
-            screenX=posX;
-            screenY=mScreenHeight/2;
-        }else if(InWhichArea.isInC4(posX,posY,mScreenWidth,mScreenHeight,mMapWidth,mMapHeight)){
-            Log.d("InWhichArea ","C4");
-
-            mArea = 34;
-            screenX=mScreenWidth-mMapWidth+posX;
-            screenY=mScreenHeight/2;
-        }else {
-            //在中间区域
-            Log.d("InWhichArea ","D");
-
-            mArea = 44;
-            screenX=mScreenWidth/2;
-            screenY=mScreenHeight/2;
+    @Override
+    public boolean collide(Collideable object) {
+        for (int i=0;i<lines.size();i++){
+            if(lines.get(i).collide(object)){
+                if (object instanceof Ball){//如果碰到球人物死亡
+                    die();
+                }else if(object instanceof Line){//如果碰到线段则移动受限
+                    double angle = mAngle - 180;//方法是让人物反向运动知道刚好脱离墙壁
+                    while(lines.get(i).collide(object)){//解决人物嵌入墙壁的bug
+                            //updatePoint(mSpeed/5,mAngle);
+                        updatePoint(mSpeed/5,angle);
+                    }
+                    float b = (float) Math.cos(Math.toRadians(mAngle - ((Line)object).getAngle()));
+                    if (b>=0){
+                        mAngle = ((Line)object).getAngle();
+                        mSpeed = mSpeed * b;
+                    }else {
+                        mAngle = ((Line)object).getAngle()-180;
+                        mSpeed = -mSpeed * b;
+                    }
+                }//如果碰到的非球非线那么就不操作，应该避免这种情况，因此应该一直保证用object.collide(hero)
+                return true;
+            }
         }
+        return false;
     }
-*/
+
+    private void die(){}
     public void onDraw(Canvas canvas){
         canvas.drawBitmap(mBitmap,screenX,screenY,mPaint);
     }
+
     public Hero getHero(){
         return this;
     }
 
+    public void updatePoint(double speed,double angle){
+        double offsetX = (speed*Math.cos(Math.toRadians(angle)));
+        double offsetY = (speed*Math.sin(Math.toRadians(angle)));
+        screenX= (int) (screenX+offsetX);
+        screenY= (int) (screenY+offsetY);
+        lines = new ArrayList<>();
+        initLines();
+    }
     public void updatePoint(){
         int offsetX = (int)(mSpeed*Math.cos(Math.toRadians(mAngle)));
         int offsetY = (int)(mSpeed*Math.sin(Math.toRadians(mAngle)));
@@ -192,6 +172,8 @@ public class Hero {
             screenY=MainActivity.sWindowHeightPix-mHeroHeight;
         }else
             screenY=screenY+offsetY;
+        lines = new ArrayList<>();
+        initLines();
     }
 
     public void setmSpeed(double speed){
@@ -208,25 +190,13 @@ public class Hero {
         this.mAngle = angle;
     }
 
+    public double getmAngle() {
+        return mAngle;
+    }
+
     public void setmPoint(Point point){
         mPoint = point;
     }
-
-//    public int getPosX(){
-//        return posX;
-//    }
-
-//    public int getPosY() {
-//        return posY;
-//    }
-
-//    public void setPosX(int posX) {
-//        this.posX = posX;
-//    }
-//
-//    public void setPosY(int posY) {
-//        this.posY = posY;
-//    }
 
     public int getScreenX() {
         return screenX;
@@ -252,15 +222,13 @@ public class Hero {
         this.mAngle = mAngle;
     }
 
-    public double getmAngle(){return mAngle;}
-
     public int getmArea() {
         return mArea;
     }
+
 
     public void printXY(){
         Log.d("Hero","screenXY is " + screenX + " " + screenY);
         //Log.d("Hero","pos XY is " + posX + " " + posY);
     }
-
 }

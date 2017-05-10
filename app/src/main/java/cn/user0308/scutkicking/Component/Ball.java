@@ -25,7 +25,7 @@ public class Ball implements Collideable {
     private float py;
     //小球运动角度,以角度为单位
     private float mAngle;
-    private float mSpeed = 20;
+    private float mSpeed = 15;
     //小球半径
     private float mRadius = (float) (0.04* MainActivity.sWindowHeightPix);
 
@@ -66,7 +66,8 @@ public class Ball implements Collideable {
         if(object instanceof Ball){
             return checkBallCollide((Ball) object);
         }else if(object instanceof Line){
-            return checkLineCollide((Line) object);
+            return  checkLineCollide((Line) object);
+//            return checkLineCollide((Line) object);
         }else if(object instanceof Lineable){
             return object.collide(this);
         }else{
@@ -94,7 +95,9 @@ public class Ball implements Collideable {
 //        }
 //
 //        return false;
-        return line.checkBallCollide(this);
+        boolean b=line.checkBallCollide(this);
+        return b;
+//        return line.checkBallCollide(this);
     }
     /**
      * 检测小球与小球的碰撞
