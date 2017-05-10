@@ -22,6 +22,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -42,6 +44,11 @@ public class SearchDeviceActivity extends Activity implements OnItemClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //隐藏电池时间等
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //隐藏结束
         setContentView(R.layout.activity_search_device);
         setView();
         setBluetooth();
@@ -258,8 +265,14 @@ public class SearchDeviceActivity extends Activity implements OnItemClickListene
                             BluetoothMsg.lastblueToothAddress=BluetoothMsg.BlueToothAddress;
                         }
                         //Maybe this should be replaced by loading
-                        Intent in=new Intent(SearchDeviceActivity.this, MainActivity.class);
-                        startActivity(in);
+//                        if(){//如果客户端连接上了,直接开始游戏,否则,Loading
+//
+//                        }else {
+//                            Intent in=new Intent(SearchDeviceActivity.this, LoadingActivity.class);
+//                            startActivity(in);
+//                        }
+
+
 
                     }
                 });

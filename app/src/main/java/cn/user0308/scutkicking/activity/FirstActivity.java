@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,6 +20,11 @@ public class FirstActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //隐藏电池时间等
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //隐藏结束
         context = this;
         setContentView(R.layout.activity_first);
 
@@ -32,7 +39,7 @@ public class FirstActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClass(FirstActivity.this,SearchDeviceActivity.class);
                 startActivity(intent);
-                FirstActivity.this.finish();
+                //FirstActivity.this.finish();
             }
         });
 
@@ -43,7 +50,7 @@ public class FirstActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClass(FirstActivity.this,SettingActivity.class);
                 startActivity(intent);
-                FirstActivity.this.finish();
+                //FirstActivity.this.finish();
             }
         });
 
@@ -54,7 +61,7 @@ public class FirstActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClass(FirstActivity.this,HelpActivity.class);
                 startActivity(intent);
-                FirstActivity.this.finish();
+                //FirstActivity.this.finish();
             }
         });
     }
