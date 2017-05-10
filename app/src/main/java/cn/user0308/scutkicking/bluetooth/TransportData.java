@@ -45,6 +45,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import static cn.user0308.scutkicking.MainView.mBallList;
+import static cn.user0308.scutkicking.MainView.mHero;
+import static cn.user0308.scutkicking.MainView.oHero;
 
 public class TransportData {
 
@@ -52,9 +54,8 @@ public class TransportData {
     public static final String PROTOCOL_SCHEME_RFCOMM = "btspp";
     static int sendcnt = 0;
     private ListView mListView;
-    private Button disconnectButton;
     private ArrayAdapter<String> mAdapter;
-    private MainView myview;
+    //private MainView myview;
     private List<String> msgList = new ArrayList<String>();
     private BluetoothServerSocket mserverSocket = null;
     private BluetoothServerSocket oserverSocket = null;
@@ -66,7 +67,11 @@ public class TransportData {
     private BluetoothSocket cgetsocket = null;
     private BluetoothDevice device = null;
     private readThread mreadThread = null;
-    ;
+
+    public TransportData(){
+        //myview = (MainView) findViewById(R.id.myview);
+    }
+
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Handler LinkDetectedHandler = new Handler() {
         @Override
@@ -92,14 +97,10 @@ public class TransportData {
     }
 
 
-    /*
-    private void init() {
 
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, msgList);
-        mListView = (ListView) findViewById(R.id.list);
-        mListView.setAdapter(mAdapter);
-        mListView.setFastScrollEnabled(true);
+    private void disconnectBluetooth() {
 
+        /*  断开蓝牙过程
         disconnectButton = (Button) findViewById(R.id.btn_disconnect);
         disconnectButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -115,14 +116,17 @@ public class TransportData {
                 Toast.makeText(mContext, "已断开连接！", Toast.LENGTH_SHORT).show();
             }
         });
+        */
     }
-    */
-    /*
-    @Override
-    protected void onResume() {
+
+
+    //开启服务连接
+
+    protected void openBluetooth() {
 
         if (BluetoothMsg.isOpen) {
-            Toast.makeText(mContext, "连接已经打开，可以通信。如果要再建立连接，请先断开！", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(mContext, "连接已经打开，可以通信。如果要再建立连接，请先断开！", Toast.LENGTH_SHORT).show();
+            Log.d("TransportData","连接已经打开，可以通信。如果要再建立连接，请先断开！");
             return;
         }
         if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.CILENT) {
@@ -133,17 +137,17 @@ public class TransportData {
                 clientConnectThread.start();
                 BluetoothMsg.isOpen = true;
             } else {
-                Toast.makeText(mContext, "address is null !", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "address is null !", Toast.LENGTH_SHORT).show();
+                Log.d("TransportData","address is null");
             }
         } else if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.SERVICE) {
             startServerThread = new ServerThread();
             startServerThread.start();
             BluetoothMsg.isOpen = true;
         }
-        super.onResume();
+
     }
-    */
-    ;
+
 
     /* 停止服务器 */
     private void shutdownServer() {
@@ -240,19 +244,6 @@ public class TransportData {
         }.start();
     }
 
-    /*
-    @Override
-    protected void onDestroy() {
-        if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.CILENT) {
-            shutdownClient();
-        } else if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.SERVICE) {
-            shutdownServer();
-        }
-        BluetoothMsg.isOpen = false;
-        BluetoothMsg.serviceOrCilent = BluetoothMsg.ServerOrCilent.NONE;
-        super.onDestroy();
-    }
-    */
     //开启客户端
     private class clientThread extends Thread {
         @Override
@@ -373,6 +364,8 @@ public class TransportData {
                     if (cgetsocket.getInputStream().available() != 0 && BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.SERVICE) {
                         sendcnt++;
                         Log.v("MainView", "send  " + sendcnt + "  avail: " + cgetsocket.getInputStream().available());
+
+                        //获取要传输球的信息开始
                         String balltext = "";
                         //int ballnum = mBallList.size();
                         //balltext+=ballnum;
@@ -382,6 +375,8 @@ public class TransportData {
                         }
                         int bytecnt = balltext.getBytes().length;
                         balltext = bytecnt + "" + balltext;
+                        //获取传输球相关的信息结束
+
                         try {
                             OutputStream os;
 
@@ -490,7 +485,7 @@ public class TransportData {
 
                     //写入角色数据
                     String msgText;
-                    msgText = myview.mHero.getmAngle() + "," + myview.mHero.getmSpeed();
+                    msgText = mHero.getmAngle() + "," + mHero.getmSpeed();
                     try {
                         OutputStream os;
                         if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.CILENT)
@@ -510,9 +505,9 @@ public class TransportData {
                         String[] z = s.split(",");
                         //if(BluetoothMsg.serviceOrCilent==BluetoothMsg.ServerOrCilent.CILENT)
                         if (isDouble(z[0]))
-                            myview.oHero.setAngle(Double.parseDouble(z[0]));
+                            oHero.setAngle(Double.parseDouble(z[0]));
                         if (isDouble(z[1]))
-                            myview.oHero.setmSpeed(Double.parseDouble(z[1]));
+                            oHero.setmSpeed(Double.parseDouble(z[1]));
 
                     }
                 } catch (IOException e) {

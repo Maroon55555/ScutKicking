@@ -1,13 +1,17 @@
 package cn.user0308.scutkicking;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +41,10 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     //Building 相关
     private List<Building> mBuildingList;
     //Hero 主人公
-    Hero mHero = null;
+    public static Hero mHero = null;
+    public static Hero oHero = null;
+    //background
+    Bitmap background;
 
     //绘画起点
     private int x = 0;
@@ -60,12 +67,28 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         super(context);
         mRuddy = new Ruddy(context);
         mHero = new Hero(RandomUtil.createRandomPoint());
+        oHero = new Hero(RandomUtil.createRandomPoint());
         mBallList = new ArrayList<>();
         mBuildingList = new ArrayList<>();
         mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
         initBuilding();
         //initXY();
+
+        //缩放背景图片开始
+        Bitmap bg = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
+        int bgWidth = bg.getWidth();
+        int bgHeight = bg.getHeight();
+        Matrix matrix = new Matrix();
+        float sx = (float)MainActivity.sWindowWidthPix / bgWidth;
+        float sy = (float)MainActivity.sWindowHeightPix/bgHeight;
+        matrix.postScale(sx,sy);
+        background = Bitmap.createBitmap(bg,0,0,bgWidth,
+                bgHeight,matrix,false);
+        //缩放背景图片结束
+        Toast.makeText(context,"w,h is "
+                + background.getWidth() + " "
+                + background.getHeight(),Toast.LENGTH_SHORT ).show();
 
         List<Line> lines = new ArrayList<>();
         Line line1 = new Line(600,600,600,800);//left
@@ -200,6 +223,8 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             canvas = mSurfaceHolder.lockCanvas();
             canvas.drawColor(Color.BLACK);//清屏
             //canvas.drawBitmap(MainActivity.bg, 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
+            canvas.drawBitmap(background,0,0,mPaint);
+
             canvas.drawLine(100,100,500,500, mPaint);
             //画操纵杆
             mRuddy.onDraw(canvas);
@@ -222,6 +247,11 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 mSurfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
+    }
+
+    public void transportData(){
+        //需要传输的数据:角色,球   待定:建筑物,机关
+
     }
 
     @Override

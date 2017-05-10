@@ -15,24 +15,27 @@
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.SearchDeviceActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activity.FirstActivity"
             android:screenOrientation="landscape">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.SettingActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.HelpActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.LoadingActivity"
             android:screenOrientation="landscape"/>
     </application>
 

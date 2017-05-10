@@ -252,6 +252,8 @@ public class Hero {
         this.mAngle = mAngle;
     }
 
+    public double getmAngle(){return mAngle;}
+
     public int getmArea() {
         return mArea;
     }
