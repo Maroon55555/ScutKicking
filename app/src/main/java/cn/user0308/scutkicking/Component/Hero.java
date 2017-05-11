@@ -1,6 +1,5 @@
 package cn.user0308.scutkicking.Component;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,11 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.Component.Ball.Ball;
+import cn.user0308.scutkicking.Component.Ball.BubbleBall;
+import cn.user0308.scutkicking.Component.Ball.ThornBall;
 import cn.user0308.scutkicking.Lineable;
 import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.R;
-import cn.user0308.scutkicking.Utils.InWhichArea;
-import cn.user0308.scutkicking.Utils.RandomUtil;
 
 /**
  * Created by user0308 on 4/25/17.
@@ -33,11 +33,15 @@ public class Hero extends Lineable{
     //private int posY;
     private int screenX;
     private int screenY;//左上角的店
+    private int lastX;
+    private int lastY;//上一帧的位置
+    private List<Line> lastLines = new ArrayList<>();
     private int mHeroWidth;
     private int mHeroHeight;
     private int mArea;
     private double mSpeed;
     private double mAngle;
+    private boolean isPause;//如果为真那么人物暂停，这是被泡泡球击中的效果
 
     //    public int getPosX(){
 //        return posX;
@@ -51,6 +55,7 @@ public class Hero extends Lineable{
 //        this.posY = posY;
     @Override
     public void initLines() {
+        lines = new ArrayList<>();
         Line lineTop = new Line(screenX,screenY, screenX+mHeroWidth,screenY);//图片上方线段
         Line lineLeft = new Line(screenX,screenY,screenX,screenY+mHeroHeight);//左边
         Line lineBottom = new Line(screenX,screenY+mHeroHeight,screenX+mHeroWidth,screenY+mHeroHeight);//下方
@@ -114,20 +119,21 @@ public class Hero extends Lineable{
         // 得到新的图片
         mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix,true);
         //init2Hero();
+
     }
 
     @Override
     public boolean collide(Collideable object) {
         for (int i=0;i<lines.size();i++){
             if(lines.get(i).collide(object)){
-                if (object instanceof Ball){//如果碰到球人物死亡
+                if (object instanceof BubbleBall){//如果碰到球人物死亡
+                    isPause = true;
+
+                }else if (object instanceof ThornBall){
                     die();
-                }else if(object instanceof Line){//如果碰到线段则移动受限
-                    double angle = mAngle - 180;//方法是让人物反向运动知道刚好脱离墙壁
-                    while(lines.get(i).collide(object)){//解决人物嵌入墙壁的bug
-                            //updatePoint(mSpeed/5,mAngle);
-                        updatePoint(mSpeed/5,angle);
-                    }
+                }
+                else if(object instanceof Line){//如果碰到线段则移动受限
+                    back();
                     float b = (float) Math.cos(Math.toRadians(mAngle - ((Line)object).getAngle()));
                     if (b>=0){
                         mAngle = ((Line)object).getAngle();
@@ -143,7 +149,8 @@ public class Hero extends Lineable{
         return false;
     }
 
-    private void die(){}
+    private void die(){
+    }
     public void onDraw(Canvas canvas){
         canvas.drawBitmap(mBitmap,screenX,screenY,mPaint);
     }
@@ -152,15 +159,36 @@ public class Hero extends Lineable{
         return this;
     }
 
+    private void back(){
+        screenX = lastX;
+        screenY = lastY;
+        lines = lastLines;
+    }
     public void updatePoint(double speed,double angle){
-        double offsetX = (speed*Math.cos(Math.toRadians(angle)));
-        double offsetY = (speed*Math.sin(Math.toRadians(angle)));
-        screenX= (int) (screenX+offsetX);
-        screenY= (int) (screenY+offsetY);
+        lastX = screenX;
+        lastY = screenY;
+        lastLines = lines;
+        int offsetX = (int)(speed*Math.cos(Math.toRadians(angle)));
+        int offsetY = (int)(speed*Math.sin(Math.toRadians(angle)));
+        if(screenX+offsetX<0)
+            screenX=0;
+        else if(screenX+offsetX>MainActivity.sWindowWidthPix-mHeroWidth){
+            screenX=MainActivity.sWindowWidthPix-mHeroWidth;
+        }else
+            screenX=screenX+offsetX;
+        if(screenY+offsetY<0)
+            screenY=0;
+        else if(screenY+offsetY>MainActivity.sWindowHeightPix-mHeroHeight){
+            screenY=MainActivity.sWindowHeightPix-mHeroHeight;
+        }else
+            screenY=screenY+offsetY;
         lines = new ArrayList<>();
         initLines();
     }
     public void updatePoint(){
+        lastX = screenX;
+        lastY = screenY;
+        lastLines = lines;
         int offsetX = (int)(mSpeed*Math.cos(Math.toRadians(mAngle)));
         int offsetY = (int)(mSpeed*Math.sin(Math.toRadians(mAngle)));
         if(screenX+offsetX<0)
@@ -229,9 +257,16 @@ public class Hero extends Lineable{
         return mArea;
     }
 
-
     public void printXY(){
         Log.d("Hero","screenXY is " + screenX + " " + screenY);
         //Log.d("Hero","pos XY is " + posX + " " + posY);
+    }
+
+    public boolean isPause() {
+        return isPause;
+    }
+
+    public void setPause(boolean pause) {
+        isPause = pause;
     }
 }

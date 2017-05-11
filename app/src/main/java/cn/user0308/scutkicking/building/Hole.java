@@ -2,10 +2,9 @@ package cn.user0308.scutkicking.building;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
-import cn.user0308.scutkicking.Collideable;
-import cn.user0308.scutkicking.Component.Ball;
+import cn.user0308.scutkicking.Component.Ball.Ball;
+import cn.user0308.scutkicking.Component.Ball.BubbleBall;
 import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.Utils.RandomUtil;
 
@@ -37,9 +36,9 @@ public class Hole extends Building implements Attackable {
     @Override
     public void attack() {
         float medium = (begin + end)/2;
-        Ball ball = new Ball(mPositionX+ (float) (mRadius *Math.cos(Math.toRadians(medium))),
+        Ball ball = new BubbleBall(mPositionX+ (float) (mRadius *Math.cos(Math.toRadians(medium))),
                 mPositionY+(float) (mRadius*Math.sin(Math.toRadians(medium))),
-                RandomUtil.randomNum(begin, end),true);
+                RandomUtil.randomNum(begin, end));
         //Log.d("Hole", "随机数："+RandomUtil.randomNum(0,90));
         //Log.d("Hole", "发射球");
         MainView.addBall(ball);
@@ -61,4 +60,8 @@ public class Hole extends Building implements Attackable {
         this.end = end;
     }
 
+    @Override
+    public void initLines() {
+
+    }
 }

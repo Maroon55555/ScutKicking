@@ -8,12 +8,13 @@ import java.util.List;
 
 import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.Component.Line;
+import cn.user0308.scutkicking.Lineable;
 
 /**
  * Created by Yuan Qiang on 2017/4/23.
  */
 
-abstract public class Building implements Collideable {
+abstract public class Building extends Lineable {
     //protected int mId; //资源文件id
     protected float mPositionX;
     protected float mPositionY;

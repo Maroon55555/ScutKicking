@@ -22,4 +22,9 @@ public class Tower extends Building implements Attackable {
     public void attack() {
         //发射激光
     }
+
+    @Override
+    public void initLines() {
+
+    }
 }

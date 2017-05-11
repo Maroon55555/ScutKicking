@@ -1,13 +1,13 @@
-package cn.user0308.scutkicking.Component;
+package cn.user0308.scutkicking.Component.Ball;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
 import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.Lineable;
 import cn.user0308.scutkicking.activity.MainActivity;
-import cn.user0308.scutkicking.building.Hole;
 
 /**
  * Created by Yuan Qiang on 2017/4/23.
@@ -19,7 +19,6 @@ public class Ball implements Collideable {
     private float y;
     //小球在地图中的坐标
     //private int mapX,mapY;
-    private boolean isBubbleBall=true;
     //小球上一帧的位置
     private float px;
     private float py;
@@ -34,11 +33,10 @@ public class Ball implements Collideable {
         return mAngle;
     }
 
-    public Ball(float x, float y, float degree,boolean isBubbleBall) {
+    public Ball(float x, float y, float degree) {
         this.x = x;
         this.y = y;
         mAngle = degree;
-        this.isBubbleBall = isBubbleBall;
     }
 
     public void calculatePoint(){
@@ -81,23 +79,7 @@ public class Ball implements Collideable {
      *@param 
      */
     public boolean checkLineCollide(Line line){
-//        Line ballLine = new Line(x, y,
-//                x +offsetX(mSpeed + mRadius),
-//                y +offsetY(mSpeed + mRadius));
-//        //垂直小球运动方向长度等于直径的线段
-//        Line perpendicularLine = new Line(x-offsetX(mRadius),y+offsetY(mRadius),
-//                x+offsetX(mRadius),y-offsetY(mRadius));
-//        if(line.checkIntersect(ballLine)||line.checkIntersect(perpendicularLine)){
-//            x = line.getIntersectionX() - offsetX(mRadius);
-//            y = line.getIntersectionY() - offsetY(mRadius);
-//            mAngle = 2 * line.getAngle() - mAngle;
-//            return true;
-//        }
-//
-//        return false;
-        boolean b=line.checkBallCollide(this);
-        return b;
-//        return line.checkBallCollide(this);
+        return line.checkBallCollide(this);
     }
     /**
      * 检测小球与小球的碰撞
@@ -111,8 +93,8 @@ public class Ball implements Collideable {
         if(distance < 4 * mRadius * mRadius){
             float temp = mAngle;
             mAngle = ball.getAngle();
-                ball.setAngle(temp);
-                back();
+            ball.setAngle(temp);
+            back();
             return true;
         }
         return false;

@@ -3,48 +3,27 @@ package cn.user0308.scutkicking.bluetooth;
  * Created by samsung on 2017/5/5.
  */
 
-import cn.user0308.scutkicking.bluetooth.*;
 //import cn.user0308.scutkicking.MainView;
-import cn.user0308.scutkicking.Component.Ball;
-import cn.user0308.scutkicking.MainView;
-import cn.user0308.scutkicking.Utils.*;
-import cn.user0308.scutkicking.R;
+import cn.user0308.scutkicking.Component.Ball.Ball;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+        import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
+        import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
+        import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+        import android.util.Log;
+        import android.widget.ArrayAdapter;
+        import android.widget.ListView;
 
-import static cn.user0308.scutkicking.MainView.mBallList;
+        import static cn.user0308.scutkicking.MainView.mBallList;
 import static cn.user0308.scutkicking.MainView.mHero;
 import static cn.user0308.scutkicking.MainView.oHero;
 
@@ -460,7 +439,7 @@ public class TransportData {
                                 mBallList.clear();
                                 for (int i = 0; i < len; i++) {
                                     if (pos + 2 < z.length && isDouble(z[pos]) && isDouble(z[pos + 1]) && isDouble(z[pos + 2])) {
-                                        Ball tem = new Ball(Float.parseFloat(z[pos]), Float.parseFloat(z[pos + 1]), Float.parseFloat(z[pos + 2]),true);
+                                        Ball tem = new Ball(Float.parseFloat(z[pos]), Float.parseFloat(z[pos + 1]), Float.parseFloat(z[pos + 2]));
                                         mBallList.add(tem);
                                         pos += 3;
                                     } else pos++;
