@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -16,12 +17,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.user0308.scutkicking.Component.Ball.Ball;
+import cn.user0308.scutkicking.Component.Ball;
 import cn.user0308.scutkicking.Component.Hero;
 import cn.user0308.scutkicking.Component.Rect;
 import cn.user0308.scutkicking.Component.Ruddy;
 import cn.user0308.scutkicking.Component.Line;
+import cn.user0308.scutkicking.Component.Shooter;
+import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.Utils.RandomUtil;
+import cn.user0308.scutkicking.Utils.RuddyMathUtils;
 import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
@@ -31,13 +35,15 @@ import cn.user0308.scutkicking.building.Hole;
  * Created by user0308 on 4/22/17.
  */
 
-public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Callback {
+public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Callback{
 
     //Component 相关
     //操控杆
     private Ruddy mRuddy = null;
+    //发射器
+    private Shooter mShooter = null;
     //小球
-    public static List<Ball> mBallList;
+    public static List<Ball> mBallList ;
     //Building 相关
     private List<Building> mBuildingList;
     //Hero 主人公
@@ -46,6 +52,11 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     //background
     Bitmap background;
 
+    //handler
+    boolean shooterPressed=false;
+    boolean ruddyPressed=false;
+    int shooterEventID=-1,ruddyEventID=-1;
+    int mode=-1;
     //绘画起点
     private int x = 0;
     private int y = 0;
@@ -73,6 +84,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         super(context);
 
         mRuddy = new Ruddy(context);
+        mShooter = new Shooter(context);
         mHero = new Hero(RandomUtil.createRandomPoint());
         oHero = new Hero(RandomUtil.createRandomPoint());
         mBallList = new ArrayList<>();
@@ -84,19 +96,14 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         //initXY();
 
         //缩放背景图片开始
-        Bitmap bg = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg);
-        int bgWidth = bg.getWidth();
-        int bgHeight = bg.getHeight();
-        Matrix matrix = new Matrix();
-        float sx = (float) MainActivity.sWindowWidthPix / bgWidth;
-        float sy = (float) MainActivity.sWindowHeightPix / bgHeight;
-        matrix.postScale(sx, sy);
-        background = Bitmap.createBitmap(bg, 0, 0, bgWidth,
-                bgHeight, matrix, false);
+        Bitmap bg = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
+        background= ImageConvertUtil.Zoom(bg,(float)MainActivity.sWindowWidthPix,(float)MainActivity.sWindowHeightPix);
+
+//        background = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
         //缩放背景图片结束
-        Toast.makeText(context, "w,h is "
-                + background.getWidth() + " "
-                + background.getHeight(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context,"w,h is "
+//                + background.getWidth() + " "
+//                + background.getHeight(),Toast.LENGTH_SHORT ).show();
 
         List<Line> lines = new ArrayList<>();
         Line line1 = new Line(600, 300, 600, 500);//left
@@ -159,37 +166,213 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            //如果屏幕接触点不在摇杆挥动范围内,则不处理返回false
-            //mHero.setmSpeed(20.0);
-            Log.d("MainView", "ACTION_DOWN");
-        }
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            int speed = mRuddy.getmLength();
-            mHero.setmSpeed(speed / 7);
-            Log.d("MainView", "ACTION_MOVE");
-        }
-        //如果手指离开屏幕，则摇杆返回初始位置
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            mHero.setmSpeed(0.0);
-            Log.d("MainView", "ACTION_UP");
+        Point ruddyPoint = mRuddy.getmRuddyInitPoint();
+        Point shooterPoint = mShooter.getmShooterInitPoint();
+
+
+//        int lengthRuddy = RuddyMathUtils.getLength(ruddyPoint.x, ruddyPoint.y, event.getX(), event.getY());
+//        int lengthShooter = RuddyMathUtils.getLength(shooterPoint.x, shooterPoint.y, event.getX(), event.getY());
+        int lengthRuddy=0,lengthShooter=0;
+
+        switch (event.getAction() & MotionEvent.ACTION_MASK){
+            case MotionEvent.ACTION_DOWN:
+                    int tmpRuddylength = RuddyMathUtils.getLength(ruddyPoint.x, ruddyPoint.y, event.getX(), event.getY());
+                    int tmpShooterlength = RuddyMathUtils.getLength(shooterPoint.x, shooterPoint.y, event.getX(), event.getY());
+                    if(tmpRuddylength<Ruddy.RUDDY_RADIUS){
+                        ruddyPressed=true;
+                        mode=1;
+                        ruddyEventID=event.getPointerId(event.getActionIndex());
+                        lengthRuddy=tmpRuddylength;
+                        mRuddy.actionDown(lengthRuddy, event.getX(), event.getY());
+                        mHero.setAngle(mRuddy.getAngle());
+                    }else if(tmpShooterlength<Shooter.GREEN_RADIUS){//在shooter内
+                        shooterPressed=true;
+                        mode=0;
+                        shooterEventID=event.getPointerId(event.getActionIndex());
+                        lengthShooter=tmpShooterlength;
+                        mShooter.actionDown();
+                    }
+
+//                if(lengthRuddy<Ruddy.RUDDY_RADIUS) {//在ruddy内
+//                    ruddyPressed=true;
+//                }else if(lengthShooter<Shooter.GREEN_RADIUS){//在shooter内
+//                    shooterPressed=true;
+//                }
+                break;
+
+            case  MotionEvent.ACTION_POINTER_DOWN:
+                //Toast.makeText(MainActivity.sContext,"double click" + lengthShooter,Toast.LENGTH_SHORT).show();
+                int eventIndex = event.getActionIndex();
+                    int tmpRuddylength1 = RuddyMathUtils.getLength(ruddyPoint.x, ruddyPoint.y, event.getX(eventIndex), event.getY(eventIndex));
+                    int tmpShooterlength1 = RuddyMathUtils.getLength(shooterPoint.x, shooterPoint.y, event.getX(eventIndex), event.getY(eventIndex));
+                    if(tmpRuddylength1<Ruddy.RUDDY_RADIUS){//先按下shooter后按下ruddy
+                        ruddyPressed=true;
+                        mRuddy.actionDown(lengthRuddy, event.getX(eventIndex), event.getY(eventIndex));
+                        mHero.setAngle(mRuddy.getAngle());
+                        if(mode==0){//
+                            mode=2;
+                        }else if(mode==-1){//如果原来shooter没按下,现在ruddy按下
+                            mode=1;
+                        }
+                        ruddyEventID=event.getPointerId(eventIndex);
+                        lengthRuddy=tmpRuddylength1;
+                    }else if(tmpShooterlength1<Shooter.GREEN_RADIUS){//在shooter内,先按下ruddy,后按下shooter
+                        shooterPressed=true;
+                        mShooter.actionDown();
+                        if(mode==1){
+                            mode=2;
+                        }else if(mode==-1){
+                            mode=0;
+                        }
+                        shooterEventID=event.getPointerId(eventIndex);
+                        lengthShooter=tmpShooterlength1;
+                    }
+//                if(lengthRuddy<Ruddy.RUDDY_RADIUS) {//在ruddy内
+//                    ruddyPressed=true;
+//                }else if(lengthShooter<Shooter.GREEN_RADIUS){//在shooter内
+//                    shooterPressed=true;
+//                }
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                //Toast.makeText(MainActivity.sContext,"" + event.getPointerCount(),Toast.LENGTH_SHORT).show();
+//                int counters = event.getPointerCount();
+//                for(int i=0;i<counters;i++){
+//                    int tmpRuddylength1 = RuddyMathUtils.getLength(ruddyPoint.x, ruddyPoint.y, event.getX(i), event.getY(i));
+//                    int tmpShooterlength1 = RuddyMathUtils.getLength(shooterPoint.x, shooterPoint.y, event.getX(i), event.getY(i));
+//                    if(tmpRuddylength1<Ruddy.RUDDY_RADIUS && mode==0){//先按下shooter后按下ruddy
+//                        ruddyPressed=true;
+//                        mode=2;
+////                        ruddyEventID=event.getPointerId(i);
+////                        event.getPointerId(i);
+//                        lengthRuddy=tmpRuddylength1;
+//                    }else if(tmpShooterlength1<Shooter.GREEN_RADIUS && mode==1){//在shooter内,先按下ruddy,后按下shooter
+//                        shooterPressed=true;
+//                        mode=2;
+////                        shooterEventID=event.getPointerId(i);
+//                        lengthShooter=tmpShooterlength1;
+//                    }
+//                }
+//
+////                if(lengthRuddy<Ruddy.RUDDY_RADIUS) {//在ruddy内
+////                    ruddyPressed=true;
+////                }else if(lengthShooter<Shooter.GREEN_RADIUS){//在shooter内
+////                    shooterPressed=true;
+////                }
+//
+//                if(shooterPressed==true){
+//                    mShooter.actionDown();
+//                }else if(ruddyPressed==true){
+//                    mRuddy.actionDown(lengthRuddy, event.getX(), event.getY());
+//                    mHero.setAngle(mRuddy.getAngle());
+//                }
+                if(event.getPointerId(event.getActionIndex())==ruddyEventID){//ruddy up
+                    ruddyPressed=false;
+                    mRuddy.actionUP();
+                    ruddyEventID=-1;
+                    if(mode==2){
+                        mode=0;
+                    }else if(mode==1){
+                        mode=-1;
+                    }
+                }else if(event.getPointerId(event.getActionIndex())==shooterEventID){//shooter up
+                    shooterPressed=false;
+                    mShooter.actionUp();
+                    shooterEventID=-1;
+                    if(mode==2){
+                        mode=1;
+                    }else if(mode==0){
+                        mode=-1;
+                    }
+                }
+                break;
+            case  MotionEvent.ACTION_MOVE:
+
+                int indexx = event.getActionIndex();//左手index=0,但当前index=1,因为在down时设置为1,这个index不是当前的index
+                if(ruddyPressed){//出错,
+                    mRuddy.actionMove(lengthRuddy, event.getX(event.findPointerIndex(ruddyEventID)), event.getY(event.findPointerIndex(ruddyEventID)));//不能直接设置为1,因为只有ruddy点时,不存在ID=1,直接结束activity
+                    mHero.setAngle(mRuddy.getAngle());
+                    int speed = mRuddy.getmLength();
+                    mHero.setmSpeed(speed/7);
+                }
+                else if(shooterPressed){
+                    //Toast.makeText(MainActivity.sContext,"shooter move "+lengthShooter,Toast.LENGTH_SHORT).show();
+                    mShooter.actionMove(lengthShooter,event.getX(event.findPointerIndex(shooterEventID)),event.getY(event.findPointerIndex(shooterEventID)));
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                int index = event.getActionIndex();
+                if(event.getPointerId(index)==ruddyEventID){//ruddy up
+                    mRuddy.actionUP();
+                    ruddyPressed=false;
+                    mode=-1;
+                    ruddyEventID=-1;
+                }else if(event.getPointerId(index)==shooterEventID){//shooter up
+                    mShooter.actionUp();
+                    shooterPressed=false;
+                    mode=-1;
+                    shooterEventID=-1;
+                }
+
+//                if(shooterPressed==true){
+//                    //hero发球
+//                    mShooter.actionUp();
+//                    shooterPressed=false;
+//                    mode=-1;
+//                }else if(ruddyPressed==true){
+//                    mRuddy.actionUP();
+//                    ruddyPressed=false;
+//                    mode=-1;
+//                }
+                mHero.setmSpeed(0.0);
+                break;
+
         }
 
-        //如果有Touch事件,把事件传递给操控杆处理
-        //若操控杆返回true表示操控杆已经处理过此事件,通知上层不再处理
-        boolean isDealBymRuddy = mRuddy.onTouchEvent(event);
-        Log.d("MainView", "isDealByRuddy" + isDealBymRuddy);
-        if (isDealBymRuddy) {
-            //Log.d("MainView","操控杆已处理");
-            Log.d("MainView", "mRuddy.getAngle" + mRuddy.getAngle());
-            Log.d("MainView", "mHero.setAngle" + mHero.getmAngle());
-            mHero.setAngle(mRuddy.getAngle());
-            Log.d("MainView", "mHero.setAngle" + mHero.getmAngle());
-            return true;
-        } else {
-            //操控杆没有处理,交由其他控件处理,若其他控件已经处理则把下面的返回值false改为true
-            return false;
-        }
+        return true;
+
+
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            //如果屏幕接触点不在摇杆挥动范围内,则不处理返回false
+//            //mHero.setmSpeed(20.0);
+//
+//            float x = event.getX();
+//            float y = event.getY();
+//            //如果在操控杆范围内
+//
+//            //如果在发射器范围内
+//
+//            Log.d("MainView", "ACTION_DOWN");
+//        }
+//        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//            int speed = mRuddy.getmLength();
+//            mHero.setmSpeed(speed/7);
+//            Log.d("MainView", "ACTION_MOVE");
+//        }
+//        //如果手指离开屏幕，则摇杆返回初始位置
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            mHero.setmSpeed(0.0);
+//            Log.d("MainView", "ACTION_UP");
+//        }
+//
+//        //如果有Touch事件,把事件传递给操控杆处理
+//        //若操控杆返回true表示操控杆已经处理过此事件,通知上层不再处理
+//        boolean isDealBymRuddy = mRuddy.onTouchEvent(event);
+//        boolean isDealBymShooter = mShooter.onTouchEvent(event);
+//        Log.d("MainView", "isDealByRuddy"+isDealBymRuddy);
+//        if(isDealBymRuddy){
+//            //Log.d("MainView","操控杆已处理");
+//            Log.d("MainView", "mRuddy.getAngle"+mRuddy.getAngle());
+//            Log.d("MainView", "mHero.setAngle"+mHero.getmAngle());
+//            mHero.setAngle(mRuddy.getAngle());
+//            Log.d("MainView", "mHero.setAngle"+mHero.getmAngle());
+//            return true;
+//        }
+//            //操控杆没有处理,交由其他控件处理,若其他控件已经处理则把下面的返回值false改为true
+//
+//            if(isDealBymShooter) return true;
+//            else return false;
+
 
     }
 
@@ -202,7 +385,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             long end = System.currentTimeMillis();
             //切换线程
             try {
-                if (end - start < time) ;
+                if (end - start < time)
                 Thread.sleep(time - (end - start));
                 Log.d("MainView", "time:" + (end - start));
             } catch (Exception ex) {
@@ -263,6 +446,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             canvas.drawLine(100, 100, 500, 500, mPaint);
             //画操纵杆
             mRuddy.onDraw(canvas);
+            mShooter.onDraw(canvas);
             //画出所有建筑
             for (Building building :
                     mBuildingList) {
@@ -282,11 +466,6 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 mSurfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
-    }
-
-    public void move() {
-        int screenCenterX = MainActivity.sWindowWidthPix / 2;
-        int screenCenterY = MainActivity.sWindowHeightPix / 2;
     }
 
     public void transportData(){
