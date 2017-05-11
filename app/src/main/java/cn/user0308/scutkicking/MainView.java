@@ -23,6 +23,7 @@ import cn.user0308.scutkicking.Component.Rect;
 import cn.user0308.scutkicking.Component.Ruddy;
 import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.Component.Shooter;
+import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.Utils.RandomUtil;
 import cn.user0308.scutkicking.Utils.RuddyMathUtils;
 import cn.user0308.scutkicking.activity.MainActivity;
@@ -92,14 +93,8 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
         //缩放背景图片开始
         Bitmap bg = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
-        int bgWidth = bg.getWidth();
-        int bgHeight = bg.getHeight();
-        Matrix matrix = new Matrix();
-        float sx = (float)MainActivity.sWindowWidthPix / bgWidth;
-        float sy = (float)MainActivity.sWindowHeightPix/bgHeight;
-        matrix.postScale(sx,sy);
-        background = Bitmap.createBitmap(bg,0,0,bgWidth,
-                bgHeight,matrix,false);
+        background= ImageConvertUtil.Zoom(bg,(float)MainActivity.sWindowWidthPix,(float)MainActivity.sWindowHeightPix);
+
 //        background = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
         //缩放背景图片结束
 //        Toast.makeText(context,"w,h is "
