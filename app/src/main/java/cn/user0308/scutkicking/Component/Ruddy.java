@@ -17,10 +17,11 @@ import cn.user0308.scutkicking.Utils.RuddyMathUtils;
 public class Ruddy {
 
     //中间滑轮(小圆)的半径,具体数值到时修改
-    private static final int RUDDY_WHEEL_RADIUS = (int)(0.05*MainActivity.sWindowHeightPix);
+    public static final int RUDDY_WHEEL_RADIUS = (int)(0.05*MainActivity.sWindowHeightPix);
     //外面摇杆(大圆)的半径,具体数值到时修改
-    private static final int RUDDY_RADIUS = (int)(0.15*MainActivity.sWindowHeightPix);
+    public static final int RUDDY_RADIUS = (int)(0.15*MainActivity.sWindowHeightPix);
     //
+    private boolean flag=false;
     private double mAngle;//小圆圆心与大圆圆心连线与x轴正方向形成的夹角
     private int mLength;//触摸点与大圆圆心之间距离,距离越长,设置Hero运动速度越大
     private Point mRuddyWheelCurrPoint;//当前小圆圆心位置
@@ -34,7 +35,7 @@ public class Ruddy {
         int windowWidthPix = MainActivity.sWindowWidthPix;
 
         //初始化初始大圆小圆共同圆心位置
-        mRuddyInitPoint = new Point(RUDDY_RADIUS+RUDDY_WHEEL_RADIUS*2,
+        mRuddyInitPoint = new Point(windowWidthPix-(RUDDY_RADIUS+RUDDY_WHEEL_RADIUS*2),
                                     windowHeightPix-RUDDY_RADIUS-RUDDY_WHEEL_RADIUS);
 
         //初始化画笔,设置抗锯齿属性
@@ -59,37 +60,80 @@ public class Ruddy {
         //mPaint.setAlpha(255);
     }
 
-    public boolean onTouchEvent(MotionEvent event){
+    public void onTouchEvent(MotionEvent event){
         //Log.d("Ruddy","in Ruddy touch");
-        //获取触摸点与同圆圆心之间的长度
-        int length = RuddyMathUtils.getLength(mRuddyInitPoint.x, mRuddyInitPoint.y, event.getX(), event.getY());
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            //如果屏幕接触点不在摇杆挥动范围内,则不处理返回false
-            if (length > RUDDY_RADIUS) {
-                return false;
-            }
-        }
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            if (length <= RUDDY_RADIUS) {
-                //如果手指在摇杆活动范围内，则摇杆处于手指触摸位置
-                mRuddyWheelCurrPoint.set((int) event.getX(), (int) event.getY());
-            } else {
-                //设置摇杆位置，使其处于手指触摸方向的 摇杆活动范围边缘
-                mRuddyWheelCurrPoint = RuddyMathUtils.getBorderPoint(mRuddyInitPoint, new Point((int) event.getX(),
-                                                                    (int) event.getY()), RUDDY_RADIUS);
-            }
-            //Log.d("Ruddy","point is" + mRuddyWheelCurrPoint.x + " " + mRuddyWheelCurrPoint.y);
-            mAngle = RuddyMathUtils.getAngle(mRuddyWheelCurrPoint,new Point((int)event.getX(),(int)event.getY()));
 
-            //if(even.X,y>r)
-            mLength = RuddyMathUtils.getLength((int)event.getX(),(int)event.getY(),mRuddyInitPoint.x,mRuddyInitPoint.y);
-            if(mLength>RUDDY_RADIUS) mLength = RUDDY_RADIUS;
+        //获取触摸点与同圆圆心之间的长度
+//        int length = RuddyMathUtils.getLength(mRuddyInitPoint.x, mRuddyInitPoint.y, event.getX(), event.getY());
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            //如果屏幕接触点不在摇杆挥动范围内,则不处理返回false
+//            if (length > RUDDY_RADIUS) {
+//                return false;
+//            }
+//            else flag=true;
+//        }
+//        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+//            if (length <= RUDDY_RADIUS) {
+//                //如果手指在摇杆活动范围内，则摇杆处于手指触摸位置
+//                mRuddyWheelCurrPoint.set((int) event.getX(), (int) event.getY());
+//            } else {
+//                if(flag)
+//                //设置摇杆位置，使其处于手指触摸方向的 摇杆活动范围边缘
+//                mRuddyWheelCurrPoint = RuddyMathUtils.getBorderPoint(mRuddyInitPoint, new Point((int) event.getX(),
+//                                                                    (int) event.getY()), RUDDY_RADIUS);
+//            }
+            //Log.d("Ruddy","point is" + mRuddyWheelCurrPoint.x + " " + mRuddyWheelCurrPoint.y);
+//            if(flag){
+//                mAngle = RuddyMathUtils.getAngle(mRuddyWheelCurrPoint,new Point((int)event.getX(),(int)event.getY()));
+//
+//                //if(even.X,y>r)
+//                mLength = RuddyMathUtils.getLength((int)event.getX(),(int)event.getY(),mRuddyInitPoint.x,mRuddyInitPoint.y);
+//                if(mLength>RUDDY_RADIUS) mLength = RUDDY_RADIUS;
+//            }
+//        }
+//        //如果手指离开屏幕，则摇杆返回初始位置
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            mRuddyWheelCurrPoint = new Point(mRuddyInitPoint);
+//            flag = false;
+//        }
+//        return true;
+    }
+
+    public void actionUP(){
+        mRuddyWheelCurrPoint = new Point(mRuddyInitPoint);
+    }
+
+    public void actionDown(int length,float x,float y){
+        if (length <= RUDDY_RADIUS) {
+            //如果手指在摇杆活动范围内，则摇杆处于手指触摸位置
+            mRuddyWheelCurrPoint.set((int) x, (int) y);
+        } else {
+            //设置摇杆位置，使其处于手指触摸方向的 摇杆活动范围边缘
+            mRuddyWheelCurrPoint = RuddyMathUtils.getBorderPoint(mRuddyInitPoint,
+                    new Point((int) x,(int) y), RUDDY_RADIUS);
         }
-        //如果手指离开屏幕，则摇杆返回初始位置
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            mRuddyWheelCurrPoint = new Point(mRuddyInitPoint);
+        mAngle = RuddyMathUtils.getAngle(mRuddyWheelCurrPoint,new Point((int)x,(int)y));
+
+        //if(even.X,y>r)
+        mLength = RuddyMathUtils.getLength((int) x,(int)y,mRuddyInitPoint.x,mRuddyInitPoint.y);
+        if(mLength>RUDDY_RADIUS) mLength = RUDDY_RADIUS;
+    }
+
+    public void actionMove(int length,float x,float y){
+        length = RuddyMathUtils.getLength(mRuddyInitPoint.x, mRuddyInitPoint.y, x, y);
+        if (length <= RUDDY_RADIUS) {
+            //如果手指在摇杆活动范围内，则摇杆处于手指触摸位置
+            mRuddyWheelCurrPoint.set((int) x, (int) y);
+        } else {
+            //设置摇杆位置，使其处于手指触摸方向的 摇杆活动范围边缘
+            mRuddyWheelCurrPoint = RuddyMathUtils.getBorderPoint(mRuddyInitPoint,
+                    new Point((int) x,(int) y), RUDDY_RADIUS);
         }
-        return true;
+        mAngle = RuddyMathUtils.getAngle(mRuddyWheelCurrPoint,new Point((int)x,(int)y));
+
+        //if(even.X,y>r)
+        mLength = RuddyMathUtils.getLength((int)x,(int)y,mRuddyInitPoint.x,mRuddyInitPoint.y);
+        if(mLength>RUDDY_RADIUS) mLength = RUDDY_RADIUS;
     }
 
     public int getmLength(){
@@ -104,5 +148,9 @@ public class Ruddy {
 //            mAngle = 0.0;
 //        }
         return mAngle;
+    }
+
+    public Point getmRuddyInitPoint(){
+        return mRuddyInitPoint;
     }
 }

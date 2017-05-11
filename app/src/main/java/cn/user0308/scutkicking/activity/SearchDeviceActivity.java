@@ -268,8 +268,8 @@ public class SearchDeviceActivity extends Activity implements OnItemClickListene
 //                        if(){//如果客户端连接上了,直接开始游戏,否则,Loading
 //
 //                        }else {
-//                            Intent in=new Intent(SearchDeviceActivity.this, LoadingActivity.class);
-//                            startActivity(in);
+                            Intent in=new Intent(SearchDeviceActivity.this, MainActivity.class);
+                            startActivity(in);
 //                        }
 
 
