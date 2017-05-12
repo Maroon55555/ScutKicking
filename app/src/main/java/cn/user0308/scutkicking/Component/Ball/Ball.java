@@ -15,8 +15,8 @@ import cn.user0308.scutkicking.activity.MainActivity;
 
 public class Ball implements Collideable {
     //小球球心位置x,y
-    private float x;
-    private float y;
+    protected float x;
+    protected float y;
     //小球在地图中的坐标
     //private int mapX,mapY;
     //小球上一帧的位置

@@ -5,21 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.user0308.scutkicking.Component.Ball;
+
+import cn.user0308.scutkicking.Component.Ball.Ball;
 import cn.user0308.scutkicking.Component.Hero;
-import cn.user0308.scutkicking.Component.Rect;
 import cn.user0308.scutkicking.Component.Ruddy;
 import cn.user0308.scutkicking.Component.Line;
 import cn.user0308.scutkicking.Component.Shooter;
@@ -30,6 +28,7 @@ import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
 import cn.user0308.scutkicking.building.Hole;
+import cn.user0308.scutkicking.building.Obstacle;
 
 /**
  * Created by user0308 on 4/22/17.
@@ -74,7 +73,6 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     private List<Lineable> mLineableList;
 
-    private Rect rect;
 
     private int countForHero = 0;//计数器，用来记录进程跑了多少次用来设置人物暂停时间
     private int countForHole = 0;//用来设置洞发球间隔
@@ -104,19 +102,10 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 //        Toast.makeText(context,"w,h is "
 //                + background.getWidth() + " "
 //                + background.getHeight(),Toast.LENGTH_SHORT ).show();
-
-        List<Line> lines = new ArrayList<>();
-        Line line1 = new Line(600, 300, 600, 500);//left
-        Line line2 = new Line(600, 300, 700, 300);//top
-        Line line3 = new Line(600, 500, 700, 500);//bottom
-        Line line4 = new Line(700, 300, 700, 500);//right
-        lines.add(line1);
-        lines.add(line2);
-        lines.add(line3);
-        lines.add(line4);
-        rect = new Rect(lines);
-
-        mLineableList.add(rect);
+        Obstacle obstacle1 = new Obstacle(200,200, R.drawable.zhangaiwuheng,300,100);
+        Obstacle obstacle2 = new Obstacle(600,200, R.drawable.zhangaiwushuzhe,100,300);
+        mLineableList.add(obstacle1);
+        mLineableList.add(obstacle2);
 
         mLineList = new ArrayList<>();
         initWalls();
@@ -412,8 +401,9 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         for (int i = 0; i < mBallList.size(); i++) {
             mBallList.get(i).calculatePoint();
             mBallList.get(i).collide(mHero);
-            if (mBallList.get(i).collide(rect))
-                continue;
+            for (Lineable object:mLineableList){
+                mBallList.get(i).collide(object);
+            }
             for (int j = i + 1; j < mBallList.size(); j++) {
                 if (mBallList.get(i).collide(mBallList.get(j)))
                     break;
@@ -448,17 +438,16 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             mRuddy.onDraw(canvas);
             mShooter.onDraw(canvas);
             //画出所有建筑
-            for (Building building :
-                    mBuildingList) {
-                building.onDraw(canvas, mPaint);
+            for (Lineable object :
+                    mLineableList) {
+                object.onDraw(canvas, mPaint);
             }
-            rect.onDraw(canvas, mPaint);
             //画出所有球
             for (Ball ball :
                     mBallList) {
                 ball.onDraw(canvas, mPaint);
             }
-            mHero.onDraw(canvas);
+            mHero.onDraw(canvas,mPaint);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

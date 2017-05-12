@@ -24,7 +24,7 @@ public class Hole extends Building implements Attackable {
 
     @Override
     public void onDraw(Canvas canvas, Paint paint) {
-        canvas.drawCircle(mPositionX, mPositionY, mRadius, paint);
+       // canvas.drawCircle(mPositionX, mPositionY, mRadius, paint);
     }
 
     public Hole(float positionX, float positionY, float begin, float end) {

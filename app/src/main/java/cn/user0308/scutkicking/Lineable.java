@@ -1,5 +1,7 @@
 package cn.user0308.scutkicking;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import cn.user0308.scutkicking.Component.Line;
  */
 
 public abstract class Lineable implements Collideable {
-    protected List<Line> lines = new ArrayList<>();
+    protected List<Line> lines ;
     protected Boolean tag = true;//如果为真说明该对象上一桢被碰撞过
     protected int lastLine;//上一次被碰撞的线段
 
@@ -40,6 +42,8 @@ public abstract class Lineable implements Collideable {
         }
         return false;
     }
+
+    abstract public void onDraw(Canvas canvas, Paint paint);
 
     abstract public void initLines();
 }

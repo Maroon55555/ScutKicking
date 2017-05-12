@@ -15,28 +15,13 @@ import cn.user0308.scutkicking.Lineable;
  */
 
 abstract public class Building extends Lineable {
-    //protected int mId; //资源文件id
     protected float mPositionX;
     protected float mPositionY;
-    protected List<Line> mLineList;
 
     public Building(float positionX, float positionY) {
-        //this.mId = id;
+        super();
         this.mPositionX = positionX;
         this.mPositionY = positionY;
-        mLineList = new ArrayList<>();
-    }
-
-    abstract public void onDraw(Canvas canvas, Paint paint);
-
-    @Override
-    public boolean collide(Collideable object) {
-        for (Line line :mLineList){
-            if (line.collide(line)){
-                return true;
-            }
-        }
-        return false;
     }
 
     public float getPositionX() {

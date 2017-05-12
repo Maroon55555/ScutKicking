@@ -17,6 +17,7 @@ import cn.user0308.scutkicking.Component.Ball.Ball;
 import cn.user0308.scutkicking.Component.Ball.BubbleBall;
 import cn.user0308.scutkicking.Component.Ball.ThornBall;
 import cn.user0308.scutkicking.Lineable;
+import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.R;
 
@@ -27,7 +28,6 @@ import cn.user0308.scutkicking.R;
 public class Hero extends Lineable{
 
     private Bitmap mBitmap = null;
-    private Paint mPaint = null;
     private Point mPoint = null;//重心
     //private int posX;
     //private int posY;
@@ -67,17 +67,13 @@ public class Hero extends Lineable{
 
     }
     public Hero(){
+        super();
         //posX = 0;
         //posY = 0;
         screenX = 0;
         screenY = 0;
         mSpeed = 0;
-        mPaint = new Paint();
-        mPaint.setColor(Color.WHITE);
         initHero();
-        for(int i=0;i<lines.size();i++){
-            lines.remove(i);
-        }
         initLines();
     }
     public Hero(Point point){
@@ -87,39 +83,24 @@ public class Hero extends Lineable{
     public Hero(int x,int y){
         //posX = x;
         //posY = y;
+        super();
         screenX=x;
         screenY=y;
         mSpeed = 0;
-        mPaint = new Paint();
-        mPaint.setColor(Color.WHITE);
         initHero();
-        for(int i=0;i<lines.size();i++){
-            lines.remove(i);
-        }
         initLines();
     }
     public void initHero(){
         //mPoint = RandomUtil.createRandomPoint();
-        mPaint = new Paint();
         //mPaint.setColor(Color.RED);
         mSpeed = 0.0;
         mAngle= Double.NaN;
-        mBitmap = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.hero);
-        int width = mBitmap.getWidth();
-        int height = mBitmap.getHeight();
-        // 设置想要的大小
-        mHeroHeight = 50;
-        mHeroWidth = 40;
-        // 计算缩放比例
-        float scaleWidth = ((float) mHeroWidth) / width;
-        float scaleHeight = ((float) mHeroHeight) / height;
-        // 取得想要缩放的matrix参数
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
-        // 得到新的图片
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix,true);
-        //init2Hero();
-
+        mHeroHeight = 100;
+        mHeroWidth = 50;
+        setImage(R.drawable.renqianmian);
+//        int width = mBitmap.getWidth();
+//        int height = mBitmap.getHeight();
+//        // 设置想要的大小
     }
 
     @Override
@@ -127,7 +108,7 @@ public class Hero extends Lineable{
         for (int i=0;i<lines.size();i++){
             if(lines.get(i).collide(object)){
                 if (object instanceof BubbleBall){//如果碰到球人物死亡
-                    isPause = true;
+                    //isPause = true;
 
                 }else if (object instanceof ThornBall){
                     die();
@@ -151,8 +132,9 @@ public class Hero extends Lineable{
 
     private void die(){
     }
-    public void onDraw(Canvas canvas){
-        canvas.drawBitmap(mBitmap,screenX,screenY,mPaint);
+    @Override
+    public void onDraw(Canvas canvas, Paint paint){
+        canvas.drawBitmap(mBitmap,screenX,screenY,paint);
     }
 
     public Hero getHero(){
@@ -186,6 +168,25 @@ public class Hero extends Lineable{
         initLines();
     }
     public void updatePoint(){
+        int b = ((int)mAngle)%360;
+        b = convert(b);
+       if(range(b,22,67)){
+            setImage(R.drawable.renyouxia);
+        }else if(range(b,67,112)){
+            setImage(R.drawable.renqianmian);
+        }else if(range(b,112,157)){
+            setImage(R.drawable.renzuoxia);
+        }else if(range(b,157,202)){
+            setImage(R.drawable.renxiangzuo);
+        }else if(range(b,202,247)){
+            setImage(R.drawable.renzuoshang);
+        }else if(range(b,247,292)){
+            setImage(R.drawable.renhoumian);
+        }else if(range(b,292,337)){
+            setImage(R.drawable.renyoushang);
+        }else{
+            setImage(R.drawable.renxiangyou);
+       }
         lastX = screenX;
         lastY = screenY;
         lastLines = lines;
@@ -205,6 +206,21 @@ public class Hero extends Lineable{
             screenY=screenY+offsetY;
         lines = new ArrayList<>();
         initLines();
+    }
+    private boolean range(int num, int small, int large){
+        return num >= small && num<large;
+    }
+    private int convert(int a){//将输入的值映射在（0，360）之中
+        if(a<0){
+            return a+360;
+        }else {
+            return a;
+        }
+    }
+
+    private void setImage(int resourceId){
+        mBitmap = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), resourceId);
+        mBitmap = ImageConvertUtil.Zoom(mBitmap, mHeroWidth,mHeroHeight);
     }
 
     public void setmSpeed(double speed){
