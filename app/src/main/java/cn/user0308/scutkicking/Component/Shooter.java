@@ -59,19 +59,24 @@ public class Shooter {
     public void onDraw(Canvas canvas){
         if(longPressed==0){//瞬发
             mPaint.setColor(Color.GRAY);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GRAY_RADIUS,mPaint);
             mPaint.setColor(Color.RED);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GREEN_RADIUS,mPaint);
             mPaint.setColor(Color.GRAY);
         }else if(longPressed==1){//蓄力
             mPaint.setColor(Color.GRAY);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GRAY_RADIUS,mPaint);
             mPaint.setColor(Color.BLUE);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterCurrPoint.x,mShooterCurrPoint.y,BLUE_RADIUS,mPaint);
         }else {
 //            mPaint.setColor(Color.GRAY);
 //            canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GRAY_RADIUS,mPaint);
             mPaint.setColor(Color.BLACK);//平时
+            mPaint.setAlpha(70);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GREEN_RADIUS,mPaint);
         }
     }

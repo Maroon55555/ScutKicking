@@ -233,11 +233,14 @@ public class Hero extends Lineable{
         int centerPy=screenY+mHeroHeight/2;
         double r = Math.sqrt((double)(mHeroHeight/2*mHeroHeight/2+mHeroWidth/2*mHeroWidth/2));
 
-
-        Ball tmpBall = new Ball(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
+//
+//        Ball tmpBall = new Ball(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
+//                centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
+//                                (float)mBallAngle);
+        ThornBall thornBall =  new ThornBall(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
                 centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
-                                (float)mBallAngle);
-        MainView.addBall(tmpBall);
+                (float)mBallAngle);
+        MainView.addBall(thornBall);
     }
 
     public void setmBallAngle(double angle){
