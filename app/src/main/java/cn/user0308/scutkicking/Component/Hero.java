@@ -111,8 +111,7 @@ public class Hero extends Lineable{
         for (int i=0;i<lines.size();i++){
             if(lines.get(i).collide(object)){
                 if (object instanceof BubbleBall){//如果碰到球人物死亡
-                    //isPause = true;
-
+                    isPause = true;
                 }else if (object instanceof ThornBall){
                     die();
                 }

@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.R;
 import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.activity.MainActivity;
@@ -29,5 +31,14 @@ public class BubbleBall extends Ball {
     @Override
     public void onDraw(Canvas canvas, Paint paint) {
         canvas.drawBitmap(image, x - width/2, y - height/2, paint);
+    }
+
+    @Override
+    public boolean collide(Collideable object) {
+        if(super.collide(object)){
+            x = -100;//这意味着该球将被删除
+            return true;
+        }
+        return false;
     }
 }

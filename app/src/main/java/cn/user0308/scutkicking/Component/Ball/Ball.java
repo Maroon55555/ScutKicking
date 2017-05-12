@@ -61,11 +61,18 @@ public class Ball implements Collideable {
 
     @Override
     public boolean collide(Collideable object) {
+//        if(object instanceof BubbleBall){
+//            float temp = mSpeed;//碰到泡泡球速度应该保持不变
+//            if (object.collide(this)){
+//                mSpeed = temp;
+//                return true;
+//            }
+//            return false;
+//        }
         if(object instanceof Ball){
             return checkBallCollide((Ball) object);
         }else if(object instanceof Line){
             return  checkLineCollide((Line) object);
-//            return checkLineCollide((Line) object);
         }else if(object instanceof Lineable){
             return object.collide(this);
         }else{

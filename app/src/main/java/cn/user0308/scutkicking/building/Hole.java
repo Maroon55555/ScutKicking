@@ -36,8 +36,9 @@ public class Hole extends Building implements Attackable {
     @Override
     public void attack() {
         float medium = (begin + end)/2;
-        Ball ball = new BubbleBall(mPositionX+ (float) (mRadius *Math.cos(Math.toRadians(medium))),
-                mPositionY+(float) (mRadius*Math.sin(Math.toRadians(medium))),
+        Ball ball = new BubbleBall(
+                 mPositionX+ (float) ((mRadius+2) *(Math.cos(Math.toRadians(medium))/Math.abs(Math.cos(Math.toRadians(medium))))),
+                 mPositionY+ (float) ((mRadius+2) *(Math.sin(Math.toRadians(medium))/Math.abs(Math.sin(Math.toRadians(medium))))),
                 RandomUtil.randomNum(begin, end));
         //Log.d("Hole", "随机数："+RandomUtil.randomNum(0,90));
         //Log.d("Hole", "发射球");
