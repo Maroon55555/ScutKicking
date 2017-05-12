@@ -30,7 +30,7 @@ public class Shooter {
     private int pressdTime=0;
     private boolean isCounting=false;
 
-    public static final int GREEN_RADIUS = (int)(0.0075*MainActivity.sWindowWidthPix);//需要手动设置之处2：三部分（都是圆）的半径
+    public static final int GREEN_RADIUS = (int)(0.05*MainActivity.sWindowWidthPix);//需要手动设置之处2：三部分（都是圆）的半径
     private static final int BLUE_RADIUS = (int)(0.05*MainActivity.sWindowWidthPix);
     private static final int GRAY_RADIUS = (int)(0.15*MainActivity.sWindowWidthPix);
 
