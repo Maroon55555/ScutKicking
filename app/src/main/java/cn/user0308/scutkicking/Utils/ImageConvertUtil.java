@@ -16,7 +16,7 @@ public class ImageConvertUtil {
         int bgHeight = bitmap.getHeight();
         Matrix matrix = new Matrix();
         float sx = x / bgWidth;
-        float sy = y/bgHeight;
+        float sy = y / bgHeight;
         matrix.postScale(sx,sy);
         Bitmap tmp = Bitmap.createBitmap(bitmap,0,0,bgWidth,
                 bgHeight,matrix,false);

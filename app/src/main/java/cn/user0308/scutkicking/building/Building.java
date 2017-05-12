@@ -8,34 +8,20 @@ import java.util.List;
 
 import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.Component.Line;
+import cn.user0308.scutkicking.Lineable;
 
 /**
  * Created by Yuan Qiang on 2017/4/23.
  */
 
-abstract public class Building implements Collideable {
-    //protected int mId; //资源文件id
+abstract public class Building extends Lineable {
     protected float mPositionX;
     protected float mPositionY;
-    protected List<Line> mLineList;
 
     public Building(float positionX, float positionY) {
-        //this.mId = id;
+        super();
         this.mPositionX = positionX;
         this.mPositionY = positionY;
-        mLineList = new ArrayList<>();
-    }
-
-    abstract public void onDraw(Canvas canvas, Paint paint);
-
-    @Override
-    public boolean collide(Collideable object) {
-        for (Line line :mLineList){
-            if (line.collide(line)){
-                return true;
-            }
-        }
-        return false;
     }
 
     public float getPositionX() {

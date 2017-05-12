@@ -3,6 +3,7 @@ package cn.user0308.scutkicking.Component;
 import android.util.Log;
 
 import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.Component.Ball.Ball;
 import cn.user0308.scutkicking.Lineable;
 
 /**
