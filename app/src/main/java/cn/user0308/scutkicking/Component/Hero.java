@@ -9,11 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
-<<<<<<< HEAD
 import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.activity.MainActivity;
-=======
->>>>>>> 8ee86514cdc00123da9ee654cccda1ebc99f4155
 import java.util.ArrayList;
 import java.util.List;
 
@@ -239,7 +236,7 @@ public class Hero extends Lineable{
 
         Ball tmpBall = new Ball(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
                 centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
-                                (float)mBallAngle,true);
+                                (float)mBallAngle);
         MainView.addBall(tmpBall);
     }
 
