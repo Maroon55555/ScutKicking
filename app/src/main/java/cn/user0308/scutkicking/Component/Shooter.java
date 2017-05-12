@@ -25,27 +25,15 @@ public class Shooter {
     //绿色瞬发按钮 代号：mShooterGreen
     //蓝色蓄力方向决定杆 代号：mShooterBlue
     //灰色决定杆活动区域 代号：mShooterGray
-    //private Paint greenPaint;
-    //private Paint bluePaint;
-    //private Paint grayPaint;
     private Paint mPaint;
 
     private int pressdTime=0;
     private boolean isCounting=false;
-//    int mCenterX;//需要手动设置之处1 :中心XY坐标，牵一发动全身
-//    int mCenterY;
-
 
     public static final int GREEN_RADIUS = 75;//需要手动设置之处2：三部分（都是圆）的半径
     private static final int BLUE_RADIUS = 50;
     private static final int GRAY_RADIUS = 150;
 
-
-    //由mShooterGreen决定发射器的两个状态 1代表瞬发状态 0代表蓄力状态 -1 代表平时
-    //统一封装在onDraw函数中
-    //private int mShooterGreen=-1;
-    // private int mShooterBlue=0;
-    // private int mShooterGary=0;
     int longPressed = -1;
 
     //发射器中心点坐标
@@ -60,30 +48,7 @@ public class Shooter {
     public Shooter(Context context){
 
         int windowHeightPix = MainActivity.sWindowHeightPix;
-        //int windowWidthPix = MainActivity.sWindowWidthPix;
-        //Log.d("Ruddy","Height = " + windowHeightPix);
-        //Log.d("Ruddy","width = " + windowWidthPix);
-        //初始化初始大圆小圆共同圆心位置
-
-
-        //初始化初始Shooter共同圆心位置
-        //mGestureDetector = new GestureDetector(context, new MyOnGestureListener());
-
         mShooterCurrPoint=new Point(mShooterInitPoint);
-
-        //初始化几个paint
-//        bluePaint=new Paint();
-//        bluePaint.setColor(Color.BLUE);
-//        bluePaint.setAntiAlias(true);
-//
-//        grayPaint=new Paint();
-//        grayPaint.setColor(Color.LTGRAY);
-//        grayPaint.setAlpha(100);
-//        grayPaint.setAntiAlias(true);
-//
-//        greenPaint=new Paint();
-//        greenPaint.setColor(Color.GREEN);
-//        greenPaint.setAntiAlias(true);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.GRAY);
@@ -219,10 +184,13 @@ public class Shooter {
 
     public void actionMove(int length,float x,float y){
         //mShooterGreen=1;
-        length = RuddyMathUtils.getLength(mShooterInitPoint.x, mShooterInitPoint.y, x, y);
+        //length = RuddyMathUtils.getLength(mShooterInitPoint.x, mShooterInitPoint.y, x, y);
+        longPressed=1;
+
         if (length <= GRAY_RADIUS) {
             //如果手指在摇杆活动范围内，则摇杆处于手指触摸位置
-            mShooterCurrPoint.set((int) x, (int) y);
+            mShooterCurrPoint.x=(int)x;
+            mShooterCurrPoint.y=(int)y;
         } else {
             //设置摇杆位置，使其处于手指触摸方向的 摇杆活动范围边缘
             mShooterCurrPoint = RuddyMathUtils.getBorderPoint(mShooterInitPoint,

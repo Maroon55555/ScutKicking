@@ -27,7 +27,7 @@ public class Ball implements Collideable {
     private float mAngle;
     private float mSpeed = 15;
     //小球半径
-    private float mRadius = (float) (0.04* MainActivity.sWindowHeightPix);
+    public static float mRadius = (float) (0.04* MainActivity.sWindowHeightPix);
 
 
     public float getAngle() {

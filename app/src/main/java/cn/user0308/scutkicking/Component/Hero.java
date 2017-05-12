@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
+import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.activity.MainActivity;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Hero extends Lineable{
     private double mSpeed;
     private double mAngle;
 
+    private double mBallAngle;
     //    public int getPosX(){
 //        return posX;
 //    public int getPosY() {
@@ -174,6 +176,24 @@ public class Hero extends Lineable{
             screenY=screenY+offsetY;
         lines = new ArrayList<>();
         initLines();
+    }
+
+    public void sendBall(){
+        //发球
+
+        int centerPx=screenX+mHeroWidth/2;
+        int centerPy=screenY+mHeroHeight/2;
+        double r = Math.sqrt((double)(mHeroHeight/2*mHeroHeight/2+mHeroWidth/2*mHeroWidth/2));
+
+
+        Ball tmpBall = new Ball(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
+                centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
+                                (float)mBallAngle,true);
+        MainView.addBall(tmpBall);
+    }
+
+    public void setmBallAngle(double angle){
+        this.mBallAngle = angle;
     }
 
     public void setmSpeed(double speed){

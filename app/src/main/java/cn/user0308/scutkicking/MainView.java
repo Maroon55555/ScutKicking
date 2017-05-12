@@ -273,6 +273,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                     shooterPressed=false;
                     mShooter.actionUp();
                     shooterEventID=-1;
+                    mHero.sendBall();
                     if(mode==2){
                         mode=1;
                     }else if(mode==0){
@@ -282,16 +283,20 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 break;
             case  MotionEvent.ACTION_MOVE:
 
-                int indexx = event.getActionIndex();//左手index=0,但当前index=1,因为在down时设置为1,这个index不是当前的index
-                if(ruddyPressed){//出错,
+                //int indexx = event.getActionIndex();
+                if(ruddyPressed){
                     mRuddy.actionMove(lengthRuddy, event.getX(event.findPointerIndex(ruddyEventID)), event.getY(event.findPointerIndex(ruddyEventID)));//不能直接设置为1,因为只有ruddy点时,不存在ID=1,直接结束activity
                     mHero.setAngle(mRuddy.getAngle());
                     int speed = mRuddy.getmLength();
                     mHero.setmSpeed(speed/7);
                 }
-                else if(shooterPressed){
-                    //Toast.makeText(MainActivity.sContext,"shooter move "+lengthShooter,Toast.LENGTH_SHORT).show();
+                if(shooterPressed){
+                    lengthShooter=RuddyMathUtils.getLength(shooterPoint.x, shooterPoint.y, event.getX(event.findPointerIndex(shooterEventID)), event.getY(event.findPointerIndex(shooterEventID)));
                     mShooter.actionMove(lengthShooter,event.getX(event.findPointerIndex(shooterEventID)),event.getY(event.findPointerIndex(shooterEventID)));
+                    double tmpAng = mShooter.getAngle();
+                    //Toast.makeText(MainActivity.sContext,""+tmpAng,Toast.LENGTH_SHORT).show();
+                    mHero.setmBallAngle(tmpAng);
+
                 }
                 break;
 
@@ -307,6 +312,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                     shooterPressed=false;
                     mode=-1;
                     shooterEventID=-1;
+                    mHero.sendBall();
                 }
 
 //                if(shooterPressed==true){
@@ -411,7 +417,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
             }
         }
         //每隔50*50ms=2500ms建筑发球伤人
-        if(mBallList.size()<12 ) {
+        if(mBallList.size()<2 ) {
             for (Building building : mBuildingList) {
                 if (building instanceof Attackable) {
                     ((Attackable) building).attack();
