@@ -31,8 +31,8 @@ public class Shooter {
     private boolean isCounting=false;
 
     public static final int GREEN_RADIUS = (int)(0.05*MainActivity.sWindowWidthPix);//需要手动设置之处2：三部分（都是圆）的半径
-    private static final int BLUE_RADIUS = (int)(0.05*MainActivity.sWindowWidthPix);
-    private static final int GRAY_RADIUS = (int)(0.15*MainActivity.sWindowWidthPix);
+    private static final int BLUE_RADIUS = (int)(0.04*MainActivity.sWindowWidthPix);
+    private static final int GRAY_RADIUS = (int)(0.10*MainActivity.sWindowWidthPix);
 
     int longPressed = -1;
 
@@ -59,19 +59,24 @@ public class Shooter {
     public void onDraw(Canvas canvas){
         if(longPressed==0){//瞬发
             mPaint.setColor(Color.GRAY);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GRAY_RADIUS,mPaint);
             mPaint.setColor(Color.RED);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GREEN_RADIUS,mPaint);
             mPaint.setColor(Color.GRAY);
         }else if(longPressed==1){//蓄力
             mPaint.setColor(Color.GRAY);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GRAY_RADIUS,mPaint);
             mPaint.setColor(Color.BLUE);
+            mPaint.setAlpha(50);
             canvas.drawCircle(mShooterCurrPoint.x,mShooterCurrPoint.y,BLUE_RADIUS,mPaint);
         }else {
 //            mPaint.setColor(Color.GRAY);
 //            canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GRAY_RADIUS,mPaint);
             mPaint.setColor(Color.BLACK);//平时
+            mPaint.setAlpha(70);
             canvas.drawCircle(mShooterInitPoint.x,mShooterInitPoint.y,GREEN_RADIUS,mPaint);
         }
     }
