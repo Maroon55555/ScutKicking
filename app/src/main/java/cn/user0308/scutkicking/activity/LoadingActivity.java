@@ -7,7 +7,7 @@ import android.view.WindowManager;
 
 import cn.user0308.scutkicking.R;
 
-public class LoadingActivity extends AppCompatActivity {
+public class LoadingActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

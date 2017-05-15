@@ -12,7 +12,7 @@ import cn.user0308.scutkicking.activity.MainActivity;
 public class ImageConvertUtil {
 
     public static Bitmap Zoom(Bitmap bitmap,float x,float y){
-        int bgWidth = bitmap.getWidth();
+        int bgWidth =  bitmap.getWidth();
         int bgHeight = bitmap.getHeight();
         Matrix matrix = new Matrix();
         float sx = x / bgWidth;

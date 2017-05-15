@@ -22,7 +22,7 @@ public class ThornBall extends Ball{
         super(x, y, degree);
         width =  getRadius() * 2 + 10;
         height = getRadius() * 2 + 10;
-        image = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.ciqiu);
+        image = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.wanjiadeqiu);
         image = ImageConvertUtil.Zoom(image, width, height);
     }
 

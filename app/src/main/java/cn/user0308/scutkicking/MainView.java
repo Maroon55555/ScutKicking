@@ -1,6 +1,7 @@
 package cn.user0308.scutkicking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -8,11 +9,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -24,6 +30,7 @@ import cn.user0308.scutkicking.Component.Shooter;
 import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.Utils.RandomUtil;
 import cn.user0308.scutkicking.Utils.RuddyMathUtils;
+import cn.user0308.scutkicking.activity.GameOverActivity;
 import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
@@ -38,14 +45,14 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     //Component 相关
     //操控杆
-    private Ruddy mRuddy = null;
+    public static Ruddy mRuddy = null;
     //发射器
     private Shooter mShooter = null;
     //小球
     public static List<Ball> mBallList ;
-    public static List<Ball> mBallListCopy;
     //Building 相关
     private List<Building> mBuildingList;
+
     //Hero 主人公
     public static Hero mHero = null;
     public static Hero oHero = null;
@@ -73,17 +80,16 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     private List<Lineable> mLineableList;
 
-
     private int countForHero = 0;//计数器，用来记录进程跑了多少次用来设置人物暂停时间
     private int countForHole = 1000;//用来设置洞发球间隔
-    private int time = 25;//让进程睡眠的时间
+    private int time = 50;//让进程睡眠的时间
 
     public MainView(Context context) {
         super(context);
 
         mRuddy = new Ruddy(context);
         mShooter = new Shooter(context);
-        mHero = new Hero(RandomUtil.createRandomPoint());
+        mHero = new Hero( 1000, 360);
         oHero = new Hero(RandomUtil.createRandomPoint());
         mBallList = new ArrayList<>();
         mBuildingList = new ArrayList<>();
@@ -97,8 +103,8 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         Bitmap bg = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
         background= ImageConvertUtil.Zoom(bg,(float)MainActivity.sWindowWidthPix,(float)MainActivity.sWindowHeightPix);
 
-        Obstacle obstacle1 = new Obstacle(200,200, R.drawable.zhangaiwuheng,300,100);
-        Obstacle obstacle2 = new Obstacle(600,200, R.drawable.zhangaiwushuzhe,100,300);
+        Obstacle obstacle1 = new Obstacle(200,200, R.drawable.zhangaiwuhengzhe,300,100);
+        Obstacle obstacle2 = new Obstacle(600,200, R.drawable.zhangaiwu,100,300);
         mLineableList.add(obstacle1);
         mLineableList.add(obstacle2);
 
@@ -106,6 +112,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
+
     }
 
     private void initBuilding() {
@@ -140,13 +147,8 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         } else {
             Log.d("MainView", "adding ball but ball is null");
         }
-
     }
 
-    public static void removeBall(Ball ball){
-        int index = mBallListCopy.indexOf(ball);
-        mBallList.set(index, null);
-    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -391,6 +393,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         }else {
             countForHero++;
             if(countForHero * time >= 1000){//看暂停时间是否满一秒
+                mHero.setImage(R.drawable.renqianmian);
                 mHero.setPause(false);
                 countForHero = 0;
             }
@@ -423,6 +426,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 }
             }
         }
+
         //每隔50*50ms=2500ms建筑发球伤人
         if(countForHole * time > 2000){
             for (Building building : mBuildingList) {
@@ -434,12 +438,15 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         }else {
             countForHole++;
         }
-        //move();
-        for(int i = 0;i < mBallList.size();i++){
-            if(mBallList.get(i).getX() == -100){
-                mBallList.remove(i);
+
+        Iterator<Ball> iterator = mBallList.iterator();
+        while (iterator.hasNext()){
+            Ball ball = iterator.next();
+            if(ball.isDeleted == true){
+                iterator.remove();
             }
         }
+        Log.d("MainView", "NumOfBall:  "+mBallList.size());
     }
     //绘画对象的先后顺序不同,后画的会覆盖前画的
     public void myDraw() {

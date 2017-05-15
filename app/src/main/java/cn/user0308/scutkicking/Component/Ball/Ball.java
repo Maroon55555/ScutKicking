@@ -27,6 +27,7 @@ public class Ball implements Collideable {
     private float mSpeed = 15;
     //小球半径
     public static float mRadius = (float) (0.04* MainActivity.sWindowHeightPix);
+    public boolean isDeleted = false;
 
 
     public float getAngle() {
@@ -45,6 +46,12 @@ public class Ball implements Collideable {
         x += offsetX(mSpeed);
         y += offsetY(mSpeed);
     }
+    public void calculatePoint(float speed){
+        float temp = mSpeed;
+        mSpeed = speed;
+        calculatePoint();
+        mSpeed = temp;
+    }
     public float offsetX(float x){//观察到很多地方都需要用到这样的语句，因此特意提出来。。。
         return (float) (x * Math.cos(Math.toRadians(mAngle)));
     }
@@ -56,19 +63,14 @@ public class Ball implements Collideable {
         //设置抗锯齿属性,白色
         paint.setAntiAlias(true);
         paint.setColor(Color.WHITE);
-        canvas.drawCircle(x, y, mRadius ,paint);
+        canvas.drawCircle(x*MainActivity.widthScale, y*MainActivity.heightScale, mRadius ,paint);
     }
 
     @Override
     public boolean collide(Collideable object) {
-//        if(object instanceof BubbleBall){
-//            float temp = mSpeed;//碰到泡泡球速度应该保持不变
-//            if (object.collide(this)){
-//                mSpeed = temp;
-//                return true;
-//            }
-//            return false;
-//        }
+        if(object instanceof BubbleBall){
+            return object.collide(this);
+        }
         if(object instanceof Ball){
             return checkBallCollide((Ball) object);
         }else if(object instanceof Line){

@@ -26,6 +26,7 @@ public abstract class Lineable implements Collideable {
                 tag = true;
                 return true;
             } else {
+                //((Hero) object).setAngle(MainView.mRuddy.getAngle()) ;
                 tag = false;
                 return false;
             }

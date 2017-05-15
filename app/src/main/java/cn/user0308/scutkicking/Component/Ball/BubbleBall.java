@@ -35,10 +35,27 @@ public class BubbleBall extends Ball {
 
     @Override
     public boolean collide(Collideable object) {
-        if(super.collide(object)){
-            x = -100;//这意味着该球将被删除
-            return true;
+        if(object instanceof BubbleBall){
+            if(checkBallCollide((Ball) object)){
+                isDeleted = true;
+                ((BubbleBall) object).isDeleted = true;
+                return true;
+            }
+            return false;
+        }else if (object instanceof Ball){
+            float temp = ((Ball) object).getAngle();
+            if(checkBallCollide((Ball) object)){
+                isDeleted = true;
+                ((Ball) object).setAngle(temp);
+                return true;
+            }
+            return false;
+        }else {
+            if (super.collide(object)){
+                isDeleted = true;
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 }
