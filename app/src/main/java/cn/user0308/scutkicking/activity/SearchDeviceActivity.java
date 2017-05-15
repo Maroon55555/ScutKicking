@@ -128,8 +128,8 @@ public class SearchDeviceActivity extends Activity implements OnItemClickListene
                 Intent in=new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                 in.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
                 startActivity(in);
-                //直接开启，不经过提示
-                blueadapter.enable();
+                //直接开启，不经过提示,不建议这样做,有的手机会出现问题
+                //blueadapter.enable();
             }
         }
         else{   //Device does not support Bluetooth
@@ -268,6 +268,9 @@ public class SearchDeviceActivity extends Activity implements OnItemClickListene
 //                        if(){//如果客户端连接上了,直接开始游戏,否则,Loading
 //
 //                        }else {
+                        if(blueadapter!=null&&blueadapter.isDiscovering()){
+                            blueadapter.cancelDiscovery();
+                        }
                             Intent in=new Intent(SearchDeviceActivity.this, MainActivity.class);
                             startActivity(in);
 //                        }

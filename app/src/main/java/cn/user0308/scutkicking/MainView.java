@@ -25,11 +25,22 @@ import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.Utils.RandomUtil;
 import cn.user0308.scutkicking.Utils.RuddyMathUtils;
 import cn.user0308.scutkicking.activity.MainActivity;
+import cn.user0308.scutkicking.bluetooth.BluetoothMsg;
 import cn.user0308.scutkicking.building.Attackable;
 import cn.user0308.scutkicking.building.Building;
 import cn.user0308.scutkicking.building.Hole;
 import cn.user0308.scutkicking.building.Obstacle;
 
+import static cn.user0308.scutkicking.activity.MainActivity.ViewCreated;
+//处理屏幕适配
+import static cn.user0308.scutkicking.activity.MainActivity.sWindowHeightPix;
+import static cn.user0308.scutkicking.activity.MainActivity.sWindowWidthPix;
+import static cn.user0308.scutkicking.activity.MainActivity.XMOD;
+import static cn.user0308.scutkicking.activity.MainActivity.YMOD;
+import static cn.user0308.scutkicking.activity.MainActivity.toUnit;
+import static cn.user0308.scutkicking.activity.MainActivity.transferX;
+import static cn.user0308.scutkicking.activity.MainActivity.transferY;
+import static cn.user0308.scutkicking.bluetooth.TransportData.transfering;
 /**
  * Created by user0308 on 4/22/17.
  */
@@ -152,6 +163,17 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     }
 
+    public void btinit(){
+        if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.SERVICE&&mBallList.size() < 10) {
+            for (Building building : mBuildingList) {
+                if (building instanceof Attackable) {
+                    ((Attackable) building).attack();
+                }
+            }
+            ViewCreated=true;
+
+        }
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -374,6 +396,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     @Override
     public void run() {
         while (mIsRunning) {
+            ViewCreated=true;
             long start = System.currentTimeMillis();
             logic();
             myDraw();
@@ -425,8 +448,9 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 if (building instanceof Attackable) {
                     ((Attackable) building).attack();
                 }
-            }
-        }
+            }ViewCreated=true;
+        }else if (BluetoothMsg.serviceOrCilent == BluetoothMsg.ServerOrCilent.CILENT)
+            ViewCreated=true;
         //move();
 
     }
@@ -454,6 +478,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
                 ball.onDraw(canvas, mPaint);
             }
             mHero.onDraw(canvas,mPaint);
+            oHero.onDraw(canvas,mPaint);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
