@@ -11,6 +11,8 @@
     android:id="@+id/aboutview"
     android:background="@drawable/guanyuxin"
     />
+
+
     <ImageButton
         android:layout_width="220dp"
         android:layout_height="100dp"

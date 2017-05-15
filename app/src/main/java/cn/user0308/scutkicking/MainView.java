@@ -20,6 +20,8 @@ import android.widget.PopupWindow;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 import cn.user0308.scutkicking.Component.Ball.Ball;
@@ -82,7 +84,12 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 
     private int countForHero = 0;//计数器，用来记录进程跑了多少次用来设置人物暂停时间
     private int countForHole = 1000;//用来设置洞发球间隔
-    private int time = 50;//让进程睡眠的时间
+    private int time =30;//让进程睡眠的时间
+
+    //timer
+    private Timer timer = null;
+    private TimerTask timerTask = null;
+    private int numberCount = 32;
 
     public MainView(Context context) {
         super(context);
@@ -103,12 +110,24 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         Bitmap bg = BitmapFactory.decodeResource(context.getResources(),R.drawable.bg);
         background= ImageConvertUtil.Zoom(bg,(float)MainActivity.sWindowWidthPix,(float)MainActivity.sWindowHeightPix);
 
-        Obstacle obstacle1 = new Obstacle(200,200, R.drawable.zhangaiwuhengzhe,300,100);
-        Obstacle obstacle2 = new Obstacle(600,200, R.drawable.zhangaiwu,100,300);
+        Obstacle obstacle1 = new Obstacle(200,300, R.drawable.zhangaiwuhengzhe,300,100);
+        Obstacle obstacle2 = new Obstacle(800,200, R.drawable.zhangaiwu,100,300);
         mLineableList.add(obstacle1);
         mLineableList.add(obstacle2);
 
         initWalls();
+
+        timer = new Timer(true);
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                numberCount--;
+                if(numberCount <= 0){
+                    timer.cancel();
+                }
+            }
+        };
+        timer.schedule(timerTask,1000,1000);
 
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
@@ -388,6 +407,11 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     }
 
     public void logic() {
+        if (numberCount <= 0){
+            GameOverActivity.startGameOverActivity(MainActivity.sContext, true);
+            numberCount = 100;
+        }
+
         if(!mHero.isPause()){//如果人物不暂停就可以顺利移动
             mHero.updatePoint();
         }else {
@@ -428,7 +452,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         }
 
         //每隔50*50ms=2500ms建筑发球伤人
-        if(countForHole * time > 2000){
+        if(countForHole * time > 10000){
             for (Building building : mBuildingList) {
                 if (building instanceof Attackable) {
                     ((Attackable) building).attack();
@@ -452,9 +476,14 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     public void myDraw() {
         try {
             canvas = mSurfaceHolder.lockCanvas();
-            canvas.drawColor(Color.BLACK);//清屏
+            //canvas.drawColor(Color.BLACK);//清屏
             //canvas.drawBitmap(MainActivity.bg, 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
+            mPaint.setColor(Color.BLACK);
             canvas.drawBitmap(background, 0, 0, mPaint);
+            if(numberCount != 100){
+                mPaint.setTextSize(50 * MainActivity.widthScale);
+                canvas.drawText( ""+ numberCount,MainActivity.sWindowWidthPix/2,50*MainActivity.heightScale,mPaint);
+            }
 
             //画操纵杆
             mRuddy.onDraw(canvas);

@@ -139,7 +139,7 @@ public class Hero extends Lineable{
     private void die(){
         //isDie = true;
         setImage(R.drawable.renwusile);
-        GameOverActivity.startGameOverActivity(MainActivity.sContext);
+//        GameOverActivity.startGameOverActivity(MainActivity.sContext, false);
         int tempX = screenX;//让人物死亡后不再被碰撞，方法是改变lines的位置
         int tempY = screenY;
         screenX = -50;
@@ -232,8 +232,8 @@ public class Hero extends Lineable{
         setImageByAngle(mBallAngle);
         int centerPx=screenX+mHeroWidth/2;
         int centerPy=screenY+mHeroHeight/2;
-        ThornBall thornBall = new ThornBall(centerPx,centerPy, (float) mBallAngle);
-        thornBall.calculatePoint((float) (Math.max(mHeroHeight, mHeroWidth)/2+mSpeed+thornBall.getRadius()));
+        BubbleBall bubbleBall= new BubbleBall(centerPx,centerPy, (float) mBallAngle);
+        bubbleBall.calculatePoint((float) (Math.max(mHeroHeight, mHeroWidth)/2+mSpeed+bubbleBall.getRadius()));
 //        double r = Math.sqrt((double)(mHeroHeight/2*mHeroHeight/2+mHeroWidth/2*mHeroWidth/2));
 
 //
@@ -243,7 +243,7 @@ public class Hero extends Lineable{
 //        ThornBall thornBall =  new ThornBall(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
 //                centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
 //                (float)mBallAngle);
-        MainView.addBall(thornBall);
+        MainView.addBall(bubbleBall);
         lastSendBallTime = currentTime;
     }
 

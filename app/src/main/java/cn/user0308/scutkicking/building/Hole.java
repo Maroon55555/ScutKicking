@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import cn.user0308.scutkicking.Component.Ball.Ball;
 import cn.user0308.scutkicking.Component.Ball.BubbleBall;
+import cn.user0308.scutkicking.Component.Ball.ThornBall;
 import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.Utils.RandomUtil;
 
@@ -36,7 +37,7 @@ public class Hole extends Building implements Attackable {
     @Override
     public void attack() {
         float medium = (begin + end)/2;
-        Ball ball = new BubbleBall(
+        Ball ball = new ThornBall(
                  mPositionX+ (float) ((mRadius+2) *(Math.cos(Math.toRadians(medium))/Math.abs(Math.cos(Math.toRadians(medium))))),
                  mPositionY+ (float) ((mRadius+2) *(Math.sin(Math.toRadians(medium))/Math.abs(Math.sin(Math.toRadians(medium))))),
                 RandomUtil.randomNum(begin, end));

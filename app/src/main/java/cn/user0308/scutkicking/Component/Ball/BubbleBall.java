@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.provider.Settings;
 
 import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.MainView;
@@ -42,11 +43,12 @@ public class BubbleBall extends Ball {
                 return true;
             }
             return false;
-        }else if (object instanceof Ball){
-            float temp = ((Ball) object).getAngle();
+        }else if (object instanceof ThornBall){
+//            float temp = ((Ball) object).getAngle();
             if(checkBallCollide((Ball) object)){
                 isDeleted = true;
-                ((Ball) object).setAngle(temp);
+                ((ThornBall) object).lastPauseTime = System.currentTimeMillis();
+                //((Ball) object).setAngle(temp);
                 return true;
             }
             return false;
