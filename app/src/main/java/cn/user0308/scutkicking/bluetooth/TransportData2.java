@@ -73,8 +73,9 @@ public class TransportData2 {
         try {
             //创建一个Socket连接：只需要服务器在注册时的UUID号
             clientTransportSocket = remoteDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-            clientTransportSocket.connect();
-            //connect 时阻塞的,运行到下面这句说明已经connect上了
+//            if(!clientTransportSocket.isConnected())
+                clientTransportSocket.connect();
+            //connect 是阻塞的,运行到下面这句说明已经connect上了
             isConnected=true;//通
             //发送数据给服务器，说明可以接收数据
             try {

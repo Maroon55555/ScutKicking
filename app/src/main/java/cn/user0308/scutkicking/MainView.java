@@ -14,6 +14,8 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 import cn.user0308.scutkicking.Component.Ball.Ball;
@@ -61,6 +63,11 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     public static Hero oHero = null;
     //background
     Bitmap background;
+
+    //倒计时
+    int numberCount=30;
+    Timer timer = null;
+    TimerTask timerTask = null;
 
     //handler
     boolean shooterPressed=false;
@@ -122,6 +129,16 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
         initWalls();
         Line line = new Line(100, 100, 500, 500);
         mLineList.add(line);
+
+        timer = new Timer(true);
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                numberCount--;
+            }
+        };
+        timer.schedule(timerTask,1000,1000);
 
         mSurfaceHolder = this.getHolder();
         mSurfaceHolder.addCallback(this);
@@ -459,9 +476,15 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     public void myDraw() {
         try {
             canvas = mSurfaceHolder.lockCanvas();
-            canvas.drawColor(Color.BLACK);//清屏
+            //canvas.drawColor(Color.BLACK);//清屏
             //canvas.drawBitmap(MainActivity.bg, 0, 0, mPaint);//(0,0)代表canvas的起始点而不是bg的起始点
             canvas.drawBitmap(background, 0, 0, mPaint);
+
+            //add newly
+            mPaint.setTextSize(60);
+            canvas.drawText(""+numberCount,MainActivity.sWindowWidthPix/2,MainActivity.sWindowHeightPix/20,mPaint);
+            //add newly
+
 
             canvas.drawLine(100, 100, 500, 500, mPaint);
             //画操纵杆
