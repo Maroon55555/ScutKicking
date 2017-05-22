@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import cn.user0308.scutkicking.Collideable;
 import cn.user0308.scutkicking.R;
 import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.activity.MainActivity;
@@ -22,8 +23,30 @@ public class ThornBall extends Ball{
         super(x, y, degree);
         width =  getRadius() * 2 + 10;
         height = getRadius() * 2 + 10;
-        image = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.ciqiu);
+        image = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), R.drawable.wanjiadeqiu);
         image = ImageConvertUtil.Zoom(image, width, height);
+    }
+
+    @Override
+    public boolean collide(Collideable object) {
+        if(object instanceof BubbleBall){
+            if(checkBallCollide((Ball) object)){
+                ((BubbleBall) object).isDeleted = true;
+                lastPauseTime = System.currentTimeMillis();
+                return true;
+            }
+            return false;
+        }else if(object instanceof ThornBall){
+            if(checkBallCollide((Ball) object)){
+                float temp = mAngle;
+                mAngle = ((ThornBall) object).getAngle();
+                ((ThornBall) object).setAngle(temp);
+                back();
+                return true;
+            }
+            return false;
+        }
+        return super.collide(object);
     }
 
     @Override

@@ -3,6 +3,7 @@ package cn.user0308.scutkicking.building;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
@@ -22,16 +23,19 @@ public class Obstacle extends Building {
 
     public Obstacle(float positionX, float positionY, int resourceId, float width, float height) {
         super(positionX, positionY);
-        this.width = width;
-        this.height =height;
+        mPositionX = positionX * MainActivity.widthScale;
+        mPositionY = positionY * MainActivity.heightScale;
+        this.width = width*MainActivity.widthScale;
+        this.height =height*MainActivity.heightScale;
         bitmap = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), resourceId);
-        bitmap = ImageConvertUtil.Zoom(bitmap, width,height);
+        bitmap = ImageConvertUtil.Zoom(bitmap, width*MainActivity.widthScale,height*MainActivity.heightScale);
         initLines();
     }
 
     @Override
     public void onDraw(Canvas canvas, Paint paint) {
         canvas.drawBitmap(bitmap, mPositionX, mPositionY, paint);
+        paint.setColor(Color.RED);
     }
 
     @Override

@@ -85,8 +85,6 @@ public class TransportData {
         return false;
     }
 
-
-
     private void disconnectBluetooth() {
 
         /*  断开蓝牙过程

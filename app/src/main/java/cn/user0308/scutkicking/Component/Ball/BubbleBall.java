@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.provider.Settings;
 
+import cn.user0308.scutkicking.Collideable;
+import cn.user0308.scutkicking.MainView;
 import cn.user0308.scutkicking.R;
 import cn.user0308.scutkicking.Utils.ImageConvertUtil;
 import cn.user0308.scutkicking.activity.MainActivity;
@@ -29,5 +32,32 @@ public class BubbleBall extends Ball {
     @Override
     public void onDraw(Canvas canvas, Paint paint) {
         canvas.drawBitmap(image, x - width/2, y - height/2, paint);
+    }
+
+    @Override
+    public boolean collide(Collideable object) {
+        if(object instanceof BubbleBall){
+            if(checkBallCollide((Ball) object)){
+                isDeleted = true;
+                ((BubbleBall) object).isDeleted = true;
+                return true;
+            }
+            return false;
+        }else if (object instanceof ThornBall){
+//            float temp = ((Ball) object).getAngle();
+            if(checkBallCollide((Ball) object)){
+                isDeleted = true;
+                ((ThornBall) object).lastPauseTime = System.currentTimeMillis();
+                //((Ball) object).setAngle(temp);
+                return true;
+            }
+            return false;
+        }else {
+            if (super.collide(object)){
+                isDeleted = true;
+                return true;
+            }
+            return false;
+        }
     }
 }

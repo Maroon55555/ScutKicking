@@ -229,7 +229,6 @@ public class Shooter {
 //        }.start();
     }
 
-
     public Point getmShooterInitPoint(){
         return mShooterInitPoint;
     }

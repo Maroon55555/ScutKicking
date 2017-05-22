@@ -1,15 +1,15 @@
 package cn.user0308.scutkicking.Component;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 
 import cn.user0308.scutkicking.MainView;
+import cn.user0308.scutkicking.activity.GameOverActivity;
 import cn.user0308.scutkicking.activity.MainActivity;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import cn.user0308.scutkicking.Component.Ball.BubbleBall;
 import cn.user0308.scutkicking.Component.Ball.ThornBall;
 import cn.user0308.scutkicking.Lineable;
 import cn.user0308.scutkicking.Utils.ImageConvertUtil;
-import cn.user0308.scutkicking.activity.MainActivity;
 import cn.user0308.scutkicking.R;
 
 /**
@@ -40,10 +39,14 @@ public class Hero extends Lineable{
     private List<Line> lastLines = new ArrayList<>();
     private int mHeroWidth;
     private int mHeroHeight;
-    private int mArea;
+    //人上次发球的时间
+    private long lastSendBallTime;
+    private long cd = 1000;
+
     private double mSpeed;
     private double mAngle;
     private boolean isPause;//如果为真那么人物暂停，这是被泡泡球击中的效果
+    private boolean isDie;
 
     private double mBallAngle;
     //    public int getPosX(){
@@ -87,8 +90,8 @@ public class Hero extends Lineable{
         //posX = x;
         //posY = y;
         super();
-        screenX=x;
-        screenY=y;
+        screenX= (int) (x*MainActivity.widthScale);
+        screenY= (int) (y*MainActivity.heightScale);
         mSpeed = 0;
         initHero();
         initLines();
@@ -98,8 +101,8 @@ public class Hero extends Lineable{
         //mPaint.setColor(Color.RED);
         mSpeed = 0.0;
         mAngle= Double.NaN;
-        mHeroHeight = 100;
-        mHeroWidth = 50;
+        mHeroHeight = (int) (100*MainActivity.heightScale);
+        mHeroWidth = (int) (50*MainActivity.widthScale);
         setImage(R.drawable.renqianmian);
 //        int width = mBitmap.getWidth();
 //        int height = mBitmap.getHeight();
@@ -110,10 +113,10 @@ public class Hero extends Lineable{
     public boolean collide(Collideable object) {
         for (int i=0;i<lines.size();i++){
             if(lines.get(i).collide(object)){
-                if (object instanceof BubbleBall){//如果碰到球人物死亡
-                    //isPause = true;
-
-                }else if (object instanceof ThornBall){
+                if (object instanceof BubbleBall){
+                    isPause = true;
+                    setImage(R.drawable.renwupaoqi);
+                }else if (object instanceof ThornBall){//如果碰到球人物死亡
                     die();
                 }
                 else if(object instanceof Line){//如果碰到线段则移动受限
@@ -134,14 +137,19 @@ public class Hero extends Lineable{
     }
 
     private void die(){
+        isDie = true;
+        setImage(R.drawable.renwusile);
+        int tempX = screenX;//让人物死亡后不再被碰撞，方法是改变lines的位置
+        int tempY = screenY;
+        screenX = -50;
+        screenY = -50;
+        initLines();
+        screenX = tempX;
+        screenY = tempY;
     }
     @Override
     public void onDraw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmap,screenX,screenY,paint);
-    }
-
-    public Hero getHero(){
-        return this;
     }
 
     private void back(){
@@ -149,47 +157,12 @@ public class Hero extends Lineable{
         screenY = lastY;
         lines = lastLines;
     }
-    public void updatePoint(double speed,double angle){
-        lastX = screenX;
-        lastY = screenY;
-        lastLines = lines;
-        int offsetX = (int)(speed*Math.cos(Math.toRadians(angle)));
-        int offsetY = (int)(speed*Math.sin(Math.toRadians(angle)));
-        if(screenX+offsetX<0)
-            screenX=0;
-        else if(screenX+offsetX>MainActivity.sWindowWidthPix-mHeroWidth){
-            screenX=MainActivity.sWindowWidthPix-mHeroWidth;
-        }else
-            screenX=screenX+offsetX;
-        if(screenY+offsetY<0)
-            screenY=0;
-        else if(screenY+offsetY>MainActivity.sWindowHeightPix-mHeroHeight){
-            screenY=MainActivity.sWindowHeightPix-mHeroHeight;
-        }else
-            screenY=screenY+offsetY;
-        lines = new ArrayList<>();
-        initLines();
-    }
+
     public void updatePoint(){
-        int b = ((int)mAngle)%360;
-        b = convert(b);
-       if(range(b,22,67)){
-            setImage(R.drawable.renyouxia);
-        }else if(range(b,67,112)){
-            setImage(R.drawable.renqianmian);
-        }else if(range(b,112,157)){
-            setImage(R.drawable.renzuoxia);
-        }else if(range(b,157,202)){
-            setImage(R.drawable.renxiangzuo);
-        }else if(range(b,202,247)){
-            setImage(R.drawable.renzuoshang);
-        }else if(range(b,247,292)){
-            setImage(R.drawable.renhoumian);
-        }else if(range(b,292,337)){
-            setImage(R.drawable.renyoushang);
-        }else{
-            setImage(R.drawable.renxiangyou);
-       }
+        if(mSpeed == 0){
+            return;
+        }
+        setImageByAngle(mAngle);
         lastX = screenX;
         lastY = screenY;
         lastLines = lines;
@@ -207,8 +180,30 @@ public class Hero extends Lineable{
             screenY=MainActivity.sWindowHeightPix-mHeroHeight;
         }else
             screenY=screenY+offsetY;
+
         lines = new ArrayList<>();
         initLines();
+    }
+    private void setImageByAngle(double angle){//根据人物的朝向设置图片
+        int b = ((int)angle)%360;
+        b = convert(b);
+        if(range(b,22,67)){
+            setImage(R.drawable.renyouxia);
+        }else if(range(b,67,112)){
+            setImage(R.drawable.renqianmian);
+        }else if(range(b,112,157)){
+            setImage(R.drawable.renzuoxia);
+        }else if(range(b,157,202)){
+            setImage(R.drawable.renxiangzuo);
+        }else if(range(b,202,247)){
+            setImage(R.drawable.renzuoshang);
+        }else if(range(b,247,292)){
+            setImage(R.drawable.renhoumian);
+        }else if(range(b,292,337)){
+            setImage(R.drawable.renyoushang);
+        }else{
+            setImage(R.drawable.renxiangyou);
+        }
     }
     private boolean range(int num, int small, int large){
         return num >= small && num<large;
@@ -221,26 +216,34 @@ public class Hero extends Lineable{
         }
     }
 
-    private void setImage(int resourceId){
+    public void setImage(int resourceId){
         mBitmap = BitmapFactory.decodeResource(MainActivity.sContext.getResources(), resourceId);
         mBitmap = ImageConvertUtil.Zoom(mBitmap, mHeroWidth,mHeroHeight);
     }
 
     public void sendBall(){
+        long currentTime = System.currentTimeMillis();
+        long time = currentTime - lastSendBallTime;//两次发球间隔，即cd时间
+        if (time < cd || isPause || isDie  ){
+            return;
+        }
         //发球
-
+        setImageByAngle(mBallAngle);
         int centerPx=screenX+mHeroWidth/2;
         int centerPy=screenY+mHeroHeight/2;
-        double r = Math.sqrt((double)(mHeroHeight/2*mHeroHeight/2+mHeroWidth/2*mHeroWidth/2));
+        BubbleBall bubbleBall= new BubbleBall(centerPx,centerPy, (float) mBallAngle);
+        bubbleBall.calculatePoint((float) (Math.max(mHeroHeight, mHeroWidth)/2+mSpeed+bubbleBall.getRadius()));
+//        double r = Math.sqrt((double)(mHeroHeight/2*mHeroHeight/2+mHeroWidth/2*mHeroWidth/2));
 
 //
 //        Ball tmpBall = new Ball(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
 //                centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
 //                                (float)mBallAngle);
-        ThornBall thornBall =  new ThornBall(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
-                centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
-                (float)mBallAngle);
-        MainView.addBall(thornBall);
+//        ThornBall thornBall =  new ThornBall(centerPx +(float)((r+Ball.mRadius)*Math.cos(Math.toRadians(mBallAngle))),
+//                centerPy+(float)((r+Ball.mRadius)*Math.sin(Math.toRadians(mBallAngle))),
+//                (float)mBallAngle);
+        MainView.addBall(bubbleBall);
+        lastSendBallTime = currentTime;
     }
 
     public void setmBallAngle(double angle){
@@ -293,10 +296,6 @@ public class Hero extends Lineable{
         this.mAngle = mAngle;
     }
 
-    public int getmArea() {
-        return mArea;
-    }
-
     public void printXY(){
         Log.d("Hero","screenXY is " + screenX + " " + screenY);
         //Log.d("Hero","pos XY is " + posX + " " + posY);
@@ -308,5 +307,13 @@ public class Hero extends Lineable{
 
     public void setPause(boolean pause) {
         isPause = pause;
+    }
+
+    public boolean isDie() {
+        return isDie;
+    }
+
+    public void setDie(boolean die) {
+        isDie = die;
     }
 }

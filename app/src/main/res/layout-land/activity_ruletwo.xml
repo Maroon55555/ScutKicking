@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.user0308.scutkicking.activity.RuletwoActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ruleviewtwo"
+        android:background="@drawable/guizetwo"
+        />
+
+    <ImageButton
+        android:layout_width="250dp"
+        android:layout_height="120dp"
+        android:id="@+id/gamerulereturn"
+        android:background="@drawable/youxiguizebangzhu"
+
+        app:layout_constraintBottom_toBottomOf="@+id/ruleviewtwo"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/ruleviewtwo"
+        app:layout_constraintTop_toTopOf="@+id/ruleviewtwo"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/ruleviewtwo"
+        app:layout_constraintHorizontal_bias="0.177"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <ImageButton
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/leftarrowone"
+        android:background="@drawable/xiangzuojiantou"
+
+        app:layout_constraintBottom_toBottomOf="@+id/ruleviewtwo"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/ruleviewtwo"
+        app:layout_constraintTop_toTopOf="@+id/ruleviewtwo"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/ruleviewtwo"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.095" />
+
+    <ImageButton
+        android:layout_width="90dp"
+        android:layout_height="100dp"
+        android:id="@+id/leftarrowtwo"
+        android:background="@drawable/xiangzuojiantou"
+
+        app:layout_constraintBottom_toBottomOf="@+id/ruleviewtwo"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/ruleviewtwo"
+        app:layout_constraintTop_toTopOf="@+id/ruleviewtwo"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/ruleviewtwo"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.814" />
+</android.support.constraint.ConstraintLayout>

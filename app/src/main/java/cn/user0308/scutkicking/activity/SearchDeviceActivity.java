@@ -30,7 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class SearchDeviceActivity extends Activity implements OnItemClickListener{
+public class SearchDeviceActivity extends BaseActivity implements OnItemClickListener{
 
 
     private BluetoothAdapter blueadapter=null;

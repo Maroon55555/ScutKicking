@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.user0308.scutkicking.activity.RuleoneActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/guizeone"
+        android:id="@+id/ruleview"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="16dp" />
+
+<ImageButton
+    android:layout_width="250dp"
+    android:layout_height="120dp"
+    android:id="@+id/gamerulereturn"
+    android:background="@drawable/youxiguizebangzhu"
+
+    app:layout_constraintBottom_toBottomOf="@+id/ruleview"
+    android:layout_marginBottom="8dp"
+    android:layout_marginRight="8dp"
+    app:layout_constraintRight_toRightOf="@+id/ruleview"
+    app:layout_constraintTop_toTopOf="@+id/ruleview"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    app:layout_constraintLeft_toLeftOf="@+id/ruleview"
+    app:layout_constraintHorizontal_bias="0.177"
+    app:layout_constraintVertical_bias="0.0" />
+
+<ImageButton
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:id="@+id/rightarrow"
+    android:background="@drawable/xiangyoujiantou"
+
+    app:layout_constraintBottom_toBottomOf="@+id/ruleview"
+    android:layout_marginBottom="8dp"
+    android:layout_marginRight="8dp"
+    app:layout_constraintRight_toRightOf="@+id/ruleview"
+    app:layout_constraintTop_toTopOf="@+id/ruleview"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    app:layout_constraintLeft_toLeftOf="@+id/ruleview"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintVertical_bias="0.773" />
+
+
+    <ImageButton
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/leftarrow"
+        android:background="@drawable/xiangzuojiantou"
+
+        app:layout_constraintBottom_toBottomOf="@+id/ruleview"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/ruleview"
+        app:layout_constraintTop_toTopOf="@+id/ruleview"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/ruleview"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.095" />
+
+</android.support.constraint.ConstraintLayout>

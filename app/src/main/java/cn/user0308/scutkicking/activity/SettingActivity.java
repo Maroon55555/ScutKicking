@@ -7,7 +7,7 @@ import android.view.WindowManager;
 
 import cn.user0308.scutkicking.R;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
