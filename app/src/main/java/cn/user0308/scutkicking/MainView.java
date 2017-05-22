@@ -76,6 +76,7 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     private boolean mIsRunning = false;
     private Paint mPaint = null;
     private Canvas canvas = null;
+    private boolean isGameOverActivity = false;
 
     //地图中所有的线段
     private List<Line> mLineList;
@@ -407,9 +408,18 @@ public class MainView extends SurfaceView implements Runnable, SurfaceHolder.Cal
     }
 
     public void logic() {
+        if (mHero.isDie()){
+            if (isGameOverActivity == false){
+                isGameOverActivity = true;
+                GameOverActivity.startGameOverActivity(MainActivity.sContext, false);
+            }
+        }
         if (numberCount <= 0){
-            GameOverActivity.startGameOverActivity(MainActivity.sContext, true);
-            numberCount = 100;
+            if (isGameOverActivity == false) {
+                isGameOverActivity = true;
+                GameOverActivity.startGameOverActivity(MainActivity.sContext, true);
+                numberCount = 100;
+            }
         }
 
         if(!mHero.isPause()){//如果人物不暂停就可以顺利移动

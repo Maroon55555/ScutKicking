@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.GameOverActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/myTheme" />
         <activity android:name=".activity.LoadingActivity"

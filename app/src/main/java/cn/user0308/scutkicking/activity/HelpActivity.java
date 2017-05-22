@@ -35,7 +35,7 @@ public class HelpActivity extends BaseActivity {
         helpReturnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"return",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"return",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setClass(HelpActivity.this,FirstActivity.class);
                 startActivity(intent);//通过intent类来另外启动一个activity
@@ -45,7 +45,7 @@ public class HelpActivity extends BaseActivity {
         gameRuleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"gamerule",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"gamerule",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setClass(HelpActivity.this,RuleoneActivity.class);
                 startActivity(intent);//通过intent类来另外启动一个activity
@@ -55,7 +55,7 @@ public class HelpActivity extends BaseActivity {
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"about",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"about",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setClass(HelpActivity.this,AboutActivity.class);
                 startActivity(intent);//通过intent类来另外启动一个activity

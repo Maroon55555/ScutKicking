@@ -33,7 +33,7 @@ public class AboutActivity extends BaseActivity {
         aboutReturnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"return",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"return",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setClass(AboutActivity.this,HelpActivity.class);
                 startActivity(intent);//通过intent类来另外启动一个activity

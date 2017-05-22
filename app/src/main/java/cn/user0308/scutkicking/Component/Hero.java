@@ -137,9 +137,8 @@ public class Hero extends Lineable{
     }
 
     private void die(){
-        //isDie = true;
+        isDie = true;
         setImage(R.drawable.renwusile);
-//        GameOverActivity.startGameOverActivity(MainActivity.sContext, false);
         int tempX = screenX;//让人物死亡后不再被碰撞，方法是改变lines的位置
         int tempY = screenY;
         screenX = -50;

@@ -53,7 +53,7 @@ public class FirstActivity extends BaseActivity {
         helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"help press ",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"help press ",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.setClass(FirstActivity.this,HelpActivity.class);
                 startActivity(intent);
